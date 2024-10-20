@@ -23,5 +23,6 @@
     /* If your code doesn't run in the DOM: */
     "lib": ["es2022"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["backend/**/*.ts"],
+  "exclude": ["backend/dist", "backend/node_modules"]
 }
