@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file .env index.ts",
+    "dev": "tsx watch index.ts",
     "build": "tsc",
     "start": "node --env-file .env dist/index.js"
   },
@@ -21,6 +21,7 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.7.7",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
   }
