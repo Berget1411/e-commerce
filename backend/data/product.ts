@@ -3,7 +3,7 @@ import db from "../db";
 import { eq } from "drizzle-orm";
 import { Product } from "../../types";
 
-export const getAllProducts = async () => {
+export const findAllProducts = async () => {
   const products = await db.query.products.findMany();
   return products;
 };
@@ -32,4 +32,11 @@ export const createProduct = async ({
     isFeatured,
   });
   return newProduct;
+};
+
+export const findFeaturedProducts = async () => {
+  const featuredProducts = await db.query.products.findMany({
+    where: eq(products.isFeatured, true),
+  });
+  return featuredProducts;
 };

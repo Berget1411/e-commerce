@@ -6,6 +6,7 @@ import {
   refreshToken,
   getProfile,
 } from "../controllers/auth.controller";
+import { protectRoute } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
