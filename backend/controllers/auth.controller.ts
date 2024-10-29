@@ -1,20 +1,26 @@
 import { Request, Response } from "express";
-import db from "../db";
-import { users } from "../db/schema";
+import { SignUpValidationSchema, LoginValidationSchema } from "../schemas";
+import { findUserByEmail, createUser } from "../data/user";
 
 export const signUp = async (req: Request, res: Response) => {
-  res.json({ message: "Sign up" });
+  const validatedFields = SignUpValidationSchema.safeParse(req.body);
+
+  if (!validatedFields.success) {
+    return res.status(400).json({ message: "Invalid fields" });
+  }
+
+  const { name, email, password } = validatedFields.data;
+  const existingUser = await findUserByEmail(email);
+  if (existingUser) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+  const user = await createUser({ name, email, password });
+
+  if (user instanceof Error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
+  res.status(201).json({ message: "User created successfully" });
 };
 
-export const createAccount = async (req: Request, res: Response) => {
-  const result = await db.insert(users).values(req.body);
-  res.send(result);
-};
-
-export const login = async (req: Request, res: Response) => {
-  res.json({ message: "Log in" });
-};
-
-export const logout = async (req: Request, res: Response) => {
-  res.json({ message: "Log out" });
-};
+export const login = async (req: Request, res: Response) => {};
