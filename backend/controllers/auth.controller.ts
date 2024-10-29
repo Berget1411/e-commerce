@@ -189,3 +189,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+export const getProfile = async (req: Request, res: Response) => {
+  // TODO: implement this
+}; // TODO: implement this
