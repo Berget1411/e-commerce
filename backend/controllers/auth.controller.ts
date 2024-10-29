@@ -69,7 +69,9 @@ export const signUp = async (req: Request, res: Response) => {
   setCookies(res, accessToken, refreshToken);
 
   if (user instanceof Error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: user.message });
   }
 
   res.status(201).json({
@@ -79,3 +81,23 @@ export const signUp = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_TOKEN_SECRET
+      );
+      await redis.del(`refreshToken:${decoded.userId}`);
+    }
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
