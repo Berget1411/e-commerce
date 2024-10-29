@@ -43,8 +43,11 @@ export const products = pgTable("product", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  image: text("image"),
+  image: text("image").notNull(),
+  isFeatured: boolean("isFeatured").notNull().default(false),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
 });
