@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { SignUpValidationSchema, LoginValidationSchema } from "../schemas";
 import { findUserByEmail, createUser } from "../data/user";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import redis from "../lib/redis";
 
@@ -49,38 +50,85 @@ const setCookies = (
 };
 
 export const signUp = async (req: Request, res: Response) => {
-  const validatedFields = SignUpValidationSchema.safeParse(req.body);
+  try {
+    const validatedFields = SignUpValidationSchema.safeParse(req.body);
 
-  if (!validatedFields.success) {
-    return res.status(400).json({ message: "Invalid fields" });
-  }
+    if (!validatedFields.success) {
+      return res.status(400).json({ message: "Invalid fields" });
+    }
 
-  const { name, email, password } = validatedFields.data;
-  const existingUser = await findUserByEmail(email);
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
-  }
-  const user = await createUser({ name, email, password });
+    const { name, email, password } = validatedFields.data;
+    const existingUser = await findUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+    const user = await createUser({ name, email, password });
 
-  // authenticate user
-  const { accessToken, refreshToken } = await generateTokens(user.id);
-  await storeRefreshToken(user.id, refreshToken);
+    // authenticate user
+    const { accessToken, refreshToken } = await generateTokens(user.id);
+    await storeRefreshToken(user.id, refreshToken);
 
-  setCookies(res, accessToken, refreshToken);
+    setCookies(res, accessToken, refreshToken);
 
-  if (user instanceof Error) {
+    if (user instanceof Error) {
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: user.message });
+    }
+
+    res.status(201).json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      message: "User created successfully",
+    });
+  } catch (error) {
+    console.log("error in signup", error);
     return res
       .status(500)
-      .json({ message: "Internal server error", error: user.message });
+      .json({ message: "Internal server error", error: error.message });
   }
-
-  res.status(201).json({
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
-    message: "User created successfully",
-  });
 };
 
-export const login = async (req: Request, res: Response) => {};
+export const login = async (req: Request, res: Response) => {
+  try {
+    const validatedFields = LoginValidationSchema.safeParse(req.body);
+    if (!validatedFields.success) {
+      return res.status(400).json({ message: "Invalid fields" });
+    }
+    const { email, password } = validatedFields.data;
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const { accessToken, refreshToken } = await generateTokens(user.id);
+    await storeRefreshToken(user.id, refreshToken);
+
+    setCookies(res, accessToken, refreshToken);
+
+    res.status(200).json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      message: "User logged in successfully",
+    });
+  } catch (error) {
+    console.log("error in login", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
 
 export const logout = async (req: Request, res: Response) => {
   try {
@@ -96,6 +144,7 @@ export const logout = async (req: Request, res: Response) => {
     res.clearCookie("refreshToken");
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
+    console.log("error in logout", error);
     return res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
