@@ -90,3 +90,16 @@ export const cartItemsRelations = relations(cartItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+export const coupons = pgTable("coupon", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  code: text("code").notNull().unique(),
+  discountPercentage: integer("discountPercentage").notNull(),
+  expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
+  isActive: boolean("isActive").notNull().default(true),
+  userId: text("userId").references(() => users.id),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
+});
