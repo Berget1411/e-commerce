@@ -8,6 +8,7 @@ import {
   handleUpdateProduct,
   handleGetRecommendations,
   handleGetProductsByCategory,
+  handleToggleFeaturedProduct,
 } from "../controllers/product.controller";
 import { protectRoute, adminRoute } from "../middleware/auth.middleware";
 
