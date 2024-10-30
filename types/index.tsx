@@ -10,5 +10,7 @@ export type Product = {
   category: string;
   price: number;
   image: string;
-  isFeatured: boolean;
+  isFeatured?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
