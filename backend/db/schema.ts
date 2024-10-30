@@ -103,3 +103,14 @@ export const coupons = pgTable("coupon", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
 });
+
+export const orders = pgTable("order", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  cartId: text("cartId").references(() => carts.id),
+  totalAmount: integer("totalAmount").notNull(),
+  stripeSessionId: text("stripeSessionId"),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
+});
