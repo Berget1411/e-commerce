@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import redis from "../lib/redis";
+import { createCart } from "../data/cart";
 
 dotenv.config();
 
@@ -63,6 +64,7 @@ export const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "User already exists" });
     }
     const user = await createUser({ name, email, password });
+    const cart = await createCart(user.id);
 
     // authenticate user
     const { accessToken, refreshToken } = await generateTokens(user.id);

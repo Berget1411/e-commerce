@@ -192,7 +192,7 @@ export const handleToggleFeaturedProduct = async (
   try {
     const { id } = req.params;
     const product = await toggleFeaturedProduct(id);
-    await updateFeatureProductsCache();
+
     res.status(200).json(product);
   } catch (error) {
     console.error("Error in handleToggleFeaturedProduct", error.message);

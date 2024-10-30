@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { findUserById } from "../data/user";
-import { User } from "../types/user";
+import { User } from "../types/index";
 
 dotenv.config();
 
