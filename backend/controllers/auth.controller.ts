@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { SignUpValidationSchema, LoginValidationSchema } from "../schemas";
-import { findUserByEmail, createUser } from "../data/user";
+import { findUserByEmail, createUser, findUserById } from "../data/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -193,5 +193,12 @@ export const refreshToken = async (req: Request, res: Response) => {
 };
 
 export const getProfile = async (req: Request, res: Response) => {
-  // TODO: implement this
-}; // TODO: implement this
+  try {
+    res.json(req.user);
+  } catch (error) {
+    console.log("error in getProfile", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
