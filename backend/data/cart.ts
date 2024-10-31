@@ -1,12 +1,21 @@
 import { and, eq } from "drizzle-orm";
 import db from "../db";
 import { cartItems, carts } from "../db/schema";
+import { CartItem, Product } from "../types";
+import { getProductById } from "./product";
 
 export const getCartItems = async (cartId: string) => {
   const cartProducts = await db.query.cartItems.findMany({
     where: eq(cartItems.cartId, cartId),
   });
   return cartProducts;
+};
+
+export const getCartById = async (cartId: string) => {
+  const cart = await db.query.carts.findFirst({
+    where: eq(carts.id, cartId),
+  });
+  return cart;
 };
 
 export const createCart = async (userId: string) => {

@@ -8,7 +8,8 @@ import { User } from "../types";
 export const handleGetCoupon = async (req: Request, res: Response) => {
   try {
     const user = req.user as User;
-    const coupon = await getCouponByUserId(user.id);
+    const coupon = await getCouponByUserId(user.id as string);
+
     if (!coupon) {
       return res.status(404).json({ message: "Coupon not found" });
     }
@@ -25,7 +26,8 @@ export const handleValidateCoupon = async (req: Request, res: Response) => {
   try {
     const { code } = req.query;
     const user = req.user as User;
-    const coupon = await validateCoupon(code as string, user.id);
+
+    const coupon = await validateCoupon(code as string, user.id as string);
     if (!coupon) {
       return res.status(404).json({ message: "Coupon not found" });
     }

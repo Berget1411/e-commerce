@@ -45,7 +45,7 @@ export const products = pgTable("product", {
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  price: integer("price").notNull(),
   image: text("image").notNull(),
   isFeatured: boolean("isFeatured").notNull().default(false),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
@@ -108,9 +108,58 @@ export const orders = pgTable("order", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  cartId: text("cartId").references(() => carts.id),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  cartId: text("cartId")
+    .notNull()
+    .references(() => carts.id),
+  status: text("status").notNull().default("pending"),
   totalAmount: integer("totalAmount").notNull(),
   stripeSessionId: text("stripeSessionId"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
 });
+
+export const orderItems = pgTable("orderItem", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  orderId: text("orderId")
+    .notNull()
+    .references(() => orders.id),
+  productId: text("productId")
+    .notNull()
+    .references(() => products.id),
+  priceAtTime: integer("priceAtTime").notNull(),
+  quantity: integer("quantity").notNull().default(1),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const orderRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  cart: one(carts, {
+    fields: [orders.cartId],
+    references: [carts.id],
+  }),
+  coupon: one(coupons, {
+    fields: [orders.couponId],
+    references: [coupons.id],
+  }),
+  items: many(orderItems),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [orderItems.productId],
+    references: [products.id],
+  }),
+}));

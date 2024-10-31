@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { User, Cart } from "../types";
 import {
   addProductToCart,
   productExistsInCart,
@@ -10,8 +11,8 @@ import {
 } from "../data/cart";
 export const handleGetCartProducts = async (req: Request, res: Response) => {
   try {
-    const user = req.user;
-    const cart = await findCartByUserId(user.id);
+    const user = req.user as User;
+    const cart = await findCartByUserId(user.id as string);
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
@@ -27,13 +28,17 @@ export const handleGetCartProducts = async (req: Request, res: Response) => {
 export const handleAddToCart = async (req: Request, res: Response) => {
   try {
     const { productId } = req.body;
-    const user = req.user;
+    const user = req.user as User;
+    const cart = await findCartByUserId(user.id as string);
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
 
-    const existingItem = await productExistsInCart(user.cartId, productId);
+    const existingItem = await productExistsInCart(cart.id, productId);
     if (existingItem) {
       await updateCartItemQuantity(existingItem.id, existingItem.quantity + 1);
     } else {
-      await addProductToCart(user.cartId, productId);
+      await addProductToCart(cart.id, productId);
     }
     res.status(200).json({ message: "Product added to cart" });
   } catch (error) {
@@ -47,8 +52,8 @@ export const handleAddToCart = async (req: Request, res: Response) => {
 export const handleRemoveAllFromCart = async (req: Request, res: Response) => {
   try {
     const { productId } = req.body;
-    const user = req.user;
-    const cart = await findCartByUserId(user.id);
+    const user = req.user as User;
+    const cart = await findCartByUserId(user.id as string);
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
@@ -70,8 +75,8 @@ export const handleUpdateQuantity = async (req: Request, res: Response) => {
   try {
     const { id: productId } = req.params;
     const { quantity } = req.body;
-    const user = req.user;
-    const cart = await findCartByUserId(user.id);
+    const user = req.user as User;
+    const cart = await findCartByUserId(user.id as string);
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
