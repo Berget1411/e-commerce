@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { loginSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CardWrapper from "./card-wrapper";
 import {
@@ -15,26 +14,40 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
+import { signUpSchema } from "@/schema";
 
-type LoginFormFields = z.infer<typeof loginSchema>;
-export default function LoginForm() {
-  const form = useForm<LoginFormFields>({
-    defaultValues: { email: "", password: "" },
-    resolver: zodResolver(loginSchema),
+type SignUpFormFields = z.infer<typeof signUpSchema>;
+export default function SignUpForm() {
+  const form = useForm<SignUpFormFields>({
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+    resolver: zodResolver(signUpSchema),
   });
-  const onSubmit = (data: LoginFormFields) => {
+  const onSubmit = (data: SignUpFormFields) => {
     console.log(data);
   };
   return (
     <CardWrapper
-      title="Login"
-      backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/sign-up"
+      title="Create an account"
+      backButtonLabel="Already have an account?"
+      backButtonHref="/auth/login"
       showSocial={true}
     >
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Form {...form}>
           <div className="mb-4 space-y-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -61,9 +74,22 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button type="submit" className="w-full">
-            Login
+            Create account
           </Button>
         </Form>
       </form>
