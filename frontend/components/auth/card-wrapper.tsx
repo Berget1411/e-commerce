@@ -32,7 +32,7 @@ export default function CardWrapper({
       </CardHeader>
       <CardContent>{children}</CardContent>
       {showSocial && <Social />}
-      <CardFooter>
+      <CardFooter className="mt-4 flex justify-center">
         <Button variant="link" asChild>
           <Link href={backButtonHref}>{backButtonLabel}</Link>
         </Button>
