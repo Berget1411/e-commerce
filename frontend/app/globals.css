@@ -2,6 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* base */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -12,6 +51,7 @@ body {
   }
 }
 
+/* Theme */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -65,6 +105,37 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  p {
+    @apply my-4 text-neutral-800 dark:text-neutral-200;
+  }
+
+  h1 {
+    @apply mb-2 mt-6 text-4xl font-medium tracking-tight;
+  }
+
+  h2 {
+    @apply mb-2 mt-6 text-xl font-medium tracking-tight;
+  }
+
+  h3 {
+    @apply mb-2 mt-6 text-xl font-medium tracking-tight;
+  }
+
+  h4 {
+    @apply mb-2 mt-6 text-lg font-medium tracking-tight;
   }
 }
 
