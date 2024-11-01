@@ -6,6 +6,13 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import Drawer from "../drawer";
 import SearchInput from "./search-input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../dropdown-menu";
+
 const tabs = [
   {
     label: "Women",
@@ -50,7 +57,7 @@ export default function Navbar() {
           >
             SoleMates
           </Link>
-          <SearchInput />
+          <SearchInput drawer={false} />
           <div>
             <Button
               variant="ghost"
@@ -70,9 +77,25 @@ export default function Navbar() {
             <Button variant="ghost" size="icon">
               <LuHeart />
             </Button>
-            <Button variant="ghost" size="icon">
-              <LuUser />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <LuUser />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <Link href="/auth/login" className="w-full">
+                    Login
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/auth/sign-up" className="w-full">
+                    Sign Up
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="flex items-center gap-4 p-4">
