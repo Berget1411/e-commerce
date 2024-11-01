@@ -15,15 +15,50 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { signUpSchema } from "@/schema";
+import FormError from "./form-error";
+import FormSuccess from "./form-success";
+import { useState } from "react";
+import LoadingSpinner from "../ui/loading-spinner";
 
 type SignUpFormFields = z.infer<typeof signUpSchema>;
 export default function SignUpForm() {
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [success, setSuccess] = useState<string | undefined>(undefined);
   const form = useForm<SignUpFormFields>({
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
     resolver: zodResolver(signUpSchema),
   });
-  const onSubmit = (data: SignUpFormFields) => {
-    console.log(data);
+  const onSubmit = async (data: SignUpFormFields) => {
+    setError(undefined);
+    setSuccess(undefined);
+    const validatedData = signUpSchema.safeParse(data);
+    if (!validatedData.success) {
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/sign-up`,
+        {
+          method: "POST",
+          body: JSON.stringify(validatedData.data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to sign up");
+      }
+
+      const user = await response.json();
+      setSuccess("Account created successfully");
+      console.log(user);
+    } catch (error) {
+      console.error("Sign up error:", error);
+      setError(error.message as string);
+    }
   };
   return (
     <CardWrapper
@@ -68,7 +103,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,15 +116,27 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Confirm password</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Create account
+          <div className="my-4 w-full">
+            <FormError message={error} />
+            <FormSuccess message={success} />
+          </div>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? (
+              <LoadingSpinner />
+            ) : (
+              "Create account"
+            )}
           </Button>
         </Form>
       </form>

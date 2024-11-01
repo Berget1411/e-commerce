@@ -1,6 +1,9 @@
 import express from "express";
 import { protectRoute } from "../middleware/auth.middleware";
-import { handleCreateCheckoutSession } from "../controllers/payment.controller";
+import {
+  handleCheckoutSuccess,
+  handleCreateCheckoutSession,
+} from "../controllers/payment.controller";
 
 const router = express.Router();
 

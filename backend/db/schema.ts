@@ -117,6 +117,8 @@ export const orders = pgTable("order", {
   status: text("status").notNull().default("pending"),
   totalAmount: integer("totalAmount").notNull(),
   stripeSessionId: text("stripeSessionId"),
+  // Add this field
+  couponId: text("couponId").references(() => coupons.id),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
 });
