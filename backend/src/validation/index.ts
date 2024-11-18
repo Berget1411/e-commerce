@@ -11,3 +11,8 @@ export const SignupValidationSchema = z.object({
       "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special case character",
   }),
 });
+
+export const LoginValidationSchema = z.object({
+  email: z.string().email({ message: "Email is required" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});

@@ -1,5 +1,5 @@
 export type User = {
-  _id: string;
+  _id: any;
   name: string;
   email: string;
   emailVerified: boolean;

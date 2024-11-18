@@ -8,6 +8,7 @@ import { initializeRedisStore } from "./lib/redis";
 
 import { connectDB } from "./lib/mongo";
 import { indexRouter } from "./routes";
+import "./strategies/local-strategy";
 
 dotenv.config();
 

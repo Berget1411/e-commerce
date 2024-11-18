@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { CreateUserInput, UserResponse } from "../types/user.type";
 import { findUserByEmail, createUser } from "../services/user.service";
-
+import { User } from "../types/user.type";
 export const signup = async (
   req: Request<any, any, CreateUserInput>,
   res: Response<{ message: string; user?: UserResponse }>
@@ -22,6 +22,40 @@ export const signup = async (
       email: newUser.email,
       emailVerified: newUser.emailVerified,
       role: newUser.role,
+    },
+  });
+};
+
+export const login = async (
+  req: Request,
+  res: Response<{ message: string; user?: UserResponse }>
+) => {
+  const user = req.user as User;
+  res.status(200).json({
+    message: "Login successful",
+    user: {
+      _id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      role: user.role,
+    },
+  });
+};
+
+export const status = async (
+  req: Request,
+  res: Response<{ message: string; user?: UserResponse }>
+) => {
+  const user = req.user as User;
+  res.status(200).json({
+    message: "User is authenticated",
+    user: {
+      _id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      role: user.role,
     },
   });
 };
