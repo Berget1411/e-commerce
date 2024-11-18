@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-
+import { useUserStore } from "@/stores/useUserStore";
 type LoginFormFields = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const form = useForm<LoginFormFields>({
@@ -24,8 +24,10 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  const { login } = useUserStore();
+
   const onSubmit = async (data: LoginFormFields) => {
-    console.log(data);
+    await login(data);
   };
   return (
     <CardWrapper

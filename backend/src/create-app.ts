@@ -16,11 +16,17 @@ export const createApp = async () => {
   const app = express();
   const redisStore = await initializeRedisStore();
 
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(cors());
   app.use(
     session({
       store: redisStore,

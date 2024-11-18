@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserStore } from "@/stores/useUserStore";
 
 const tabs = [
   {
@@ -45,6 +46,7 @@ const tabs = [
 ];
 
 export default function Navbar() {
+  const { user, logout } = useUserStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState<string | false>(false);
 
   return (
@@ -84,16 +86,31 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href="/auth/login" className="w-full">
-                    Login
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/auth/sign-up" className="w-full">
-                    Sign Up
-                  </Link>
-                </DropdownMenuItem>
+                {user ? (
+                  <>
+                    <DropdownMenuItem>
+                      <Link href="/account" className="w-full">
+                        Account
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => logout()}>
+                      Logout
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem>
+                      <Link href="/auth/login" className="w-full">
+                        Login
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/auth/signup" className="w-full">
+                        Sign Up
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
