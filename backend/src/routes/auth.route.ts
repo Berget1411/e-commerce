@@ -3,6 +3,7 @@ import { signup, login, status } from "../controllers/auth.controller";
 import { validateRequest } from "../middleware/validation";
 import { SignupValidationSchema, LoginValidationSchema } from "../validation";
 import passport from "passport";
+import { isAuthenticated } from "../middleware/auth.middleware";
 
 const router = Router();
 
@@ -13,6 +14,6 @@ router.post(
   passport.authenticate("local"),
   login
 );
-router.get("/status", status);
+router.get("/status", isAuthenticated, status);
 
 export { router as authRouter };
