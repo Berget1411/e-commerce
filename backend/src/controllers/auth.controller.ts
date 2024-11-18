@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserInput, UserResponse } from "../../types/user.type";
+import { CreateUserInput, UserResponse } from "../types/user.type";
 import { findUserByEmail, createUser } from "../services/user.service";
 
 export const signup = async (

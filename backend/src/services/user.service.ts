@@ -1,5 +1,5 @@
-import { hashPassword } from "../../utils/helpers";
-import { CreateUserInput } from "../../types/user.type";
+import { hashPassword } from "../utils/helpers";
+import { CreateUserInput } from "../types/user.type";
 import { User } from "../models/user.model";
 
 export const findUserByEmail = async (email: string) => {
