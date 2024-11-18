@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { signUpSchema } from "@/validation/auth";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useUserStore } from "@/stores/useUserStore";
 
 type SignUpFormFields = z.infer<typeof signUpSchema>;
 export default function SignUpForm() {
@@ -23,9 +24,10 @@ export default function SignUpForm() {
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
     resolver: zodResolver(signUpSchema),
   });
+  const { signup } = useUserStore();
 
   const onSubmit = async (data: SignUpFormFields) => {
-    console.log(data);
+    await signup(data);
   };
   return (
     <CardWrapper
