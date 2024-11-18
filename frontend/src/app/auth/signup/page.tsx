@@ -1,3 +1,3 @@
-export default function SignupPage() {
-  return <div>Signup</div>;
-}
+import SignUpForm from "@/components/auth/signup-form";
+
+export default SignUpForm;
