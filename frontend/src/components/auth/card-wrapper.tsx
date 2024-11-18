@@ -25,7 +25,7 @@ export default function CardWrapper({
   showSocial: boolean;
 }) {
   return (
-    <Card>
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
