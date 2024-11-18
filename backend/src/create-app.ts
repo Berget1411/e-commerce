@@ -36,7 +36,7 @@ export const createApp = async () => {
   await connectDB();
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use("/", indexRouter);
+  app.use("/api", indexRouter);
 
   return app;
 };
