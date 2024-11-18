@@ -59,3 +59,18 @@ export const status = async (
     },
   });
 };
+
+export const logout = async (
+  req: Request,
+  res: Response<{ message: string }>
+) => {
+  req.logout((err) => {
+    if (err) {
+      res.status(500).json({ message: "Failed to logout" });
+      return;
+    }
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.status(200).json({ message: "Logged out successfully" });
+  });
+};

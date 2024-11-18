@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signup, login, status } from "../controllers/auth.controller";
+import { signup, login, status, logout } from "../controllers/auth.controller";
 import { validateRequest } from "../middleware/validation";
 import { SignupValidationSchema, LoginValidationSchema } from "../validation";
 import passport from "passport";
@@ -15,5 +15,5 @@ router.post(
   login
 );
 router.get("/status", isAuthenticated, status);
-
+router.post("/logout", logout);
 export { router as authRouter };
