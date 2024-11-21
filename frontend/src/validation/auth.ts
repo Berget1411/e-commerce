@@ -27,3 +27,25 @@ export const signUpSchema = z
       });
     }
   });
+
+export const resetPasswordSchema = z.object({
+  email: z.string().email({ message: "Email is required" }),
+});
+
+export const newPasswordSchema = z
+  .object({
+    password: z.string().regex(passwordRegex, {
+      message:
+        "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
+    }),
+    confirmPassword: z.string(),
+  })
+  .superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords did not match",
+        path: ["confirmPassword"],
+      });
+    }
+  });

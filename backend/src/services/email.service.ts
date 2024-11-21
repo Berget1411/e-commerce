@@ -30,3 +30,29 @@ export async function sendVerificationEmail(email: string, token: string) {
     throw error;
   }
 }
+
+export async function sendResetPasswordEmail(email: string, token: string) {
+  const resetUrl = `${process.env.CLIENT_URL}/auth/new-password?token=${token}`;
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: "Reset your password",
+      html: `
+        <h1>Reset your password</h1>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetUrl}">Reset Password</a>
+        <p>This link will expire in 1 hour.</p>
+      `,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error sending reset password email:", error);
+    throw error;
+  }
+}

@@ -14,6 +14,14 @@ import {
   deleteVerificationToken,
   findVerificationTokenByToken,
 } from "../services/verificationToken.service";
+import {
+  createResetToken,
+  findResetTokenByToken,
+  deleteResetToken,
+} from "../services/resetToken.service";
+import { sendResetPasswordEmail } from "../services/email.service";
+import { hashPassword } from "../utils/helpers";
+
 export const signup = async (
   req: Request<any, any, CreateUserInput>,
   res: Response<{ message: string; user?: UserResponse }>
@@ -141,4 +149,58 @@ export const logout = async (
     res.clearCookie("refreshToken");
     res.status(200).json({ message: "Logged out successfully" });
   });
+};
+
+export const forgotPassword = async (
+  req: Request<any, any, { email: string }>,
+  res: Response<{ message: string }>
+) => {
+  try {
+    const { email } = req.body;
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+      return res.status(200).json({
+        message: "If an account exists, you will receive a reset email",
+      });
+    }
+
+    const resetToken = await createResetToken(user._id);
+    await sendResetPasswordEmail(user.email, resetToken.token);
+
+    res.status(200).json({
+      message: "If an account exists, you will receive a reset email",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const resetPassword = async (
+  req: Request<any, any, { token: string; password: string }>,
+  res: Response<{ message: string }>
+) => {
+  try {
+    const { token, password } = req.body;
+    const resetToken = await findResetTokenByToken(token);
+
+    if (!resetToken) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired reset token" });
+    }
+
+    const user = await UserModel.findById(resetToken.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.password = await hashPassword(password);
+    await user.save();
+    await deleteResetToken(token);
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };

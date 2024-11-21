@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { loginSchema } from "@/validation/auth";
+import { resetPasswordSchema } from "@/validation/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CardWrapper from "./card-wrapper";
 import {
@@ -16,26 +16,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { toast } from "@/hooks/use-toast";
 import { useUserStore } from "@/stores/useUserStore";
-import Link from "next/link";
-type LoginFormFields = z.infer<typeof loginSchema>;
-export default function LoginForm() {
-  const form = useForm<LoginFormFields>({
-    defaultValues: { email: "", password: "" },
-    resolver: zodResolver(loginSchema),
+
+type ResetFormFields = z.infer<typeof resetPasswordSchema>;
+
+export default function ResetForm() {
+  const forgotPassword = useUserStore((state) => state.forgotPassword);
+
+  const form = useForm<ResetFormFields>({
+    defaultValues: { email: "" },
+    resolver: zodResolver(resetPasswordSchema),
   });
 
-  const { login } = useUserStore();
-
-  const onSubmit = async (data: LoginFormFields) => {
-    await login(data);
+  const onSubmit = async (data: ResetFormFields) => {
+    await forgotPassword(data);
   };
+
   return (
     <CardWrapper
-      title="Login"
-      backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/signup"
-      showSocial={true}
+      title="Forgot your password?"
+      backButtonLabel="Back to login"
+      backButtonHref="/auth/login"
+      showSocial={false}
     >
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Form {...form}>
@@ -53,29 +56,18 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="password" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
-          <Button variant="link" className="mb-4 p-0">
-            <Link href="/auth/reset">Forgot password?</Link>
-          </Button>
+
           <Button
             type="submit"
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? <LoadingSpinner /> : "Login"}
+            {form.formState.isSubmitting ? (
+              <LoadingSpinner />
+            ) : (
+              "Send reset email"
+            )}
           </Button>
         </Form>
       </form>

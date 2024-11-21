@@ -6,6 +6,8 @@ import {
   logout,
   verifyEmail,
   resendVerificationEmail,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/auth.controller";
 import { validateRequest } from "../middleware/validation";
 import { SignupValidationSchema, LoginValidationSchema } from "../validation";
@@ -44,5 +46,8 @@ router.post("/logout", logout);
 router.get("/verify-email/:token", verifyEmail);
 
 router.post("/resend-verification", resendVerificationEmail);
+
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export { router as authRouter };
