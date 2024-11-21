@@ -9,6 +9,7 @@ import { initializeRedisStore } from "./lib/redis";
 import { connectDB } from "./lib/mongo";
 import { indexRouter } from "./routes";
 import "./strategies/local-strategy";
+import "./strategies/google-strategy";
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export const createApp = async () => {
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CLIENT_URL,
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],

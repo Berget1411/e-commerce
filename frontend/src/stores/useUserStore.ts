@@ -12,6 +12,7 @@ interface UserStore {
   isLoading: boolean;
   setUser: (user: UserResponse | null) => void;
   login: (data: LoginFormFields) => Promise<boolean>;
+  loginGoogle: () => void;
   signup: (data: SignupFormFields) => Promise<boolean>;
   logout: () => Promise<void>;
   checkSession: () => Promise<void>;
@@ -25,14 +26,17 @@ export const useUserStore = create<UserStore>((set) => ({
   login: async (data: LoginFormFields) => {
     try {
       set({ isLoading: true });
-      const response = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
       const { user, message } = await response.json();
 
@@ -57,16 +61,23 @@ export const useUserStore = create<UserStore>((set) => ({
       return false;
     }
   },
+
+  loginGoogle: () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login/federated/google`;
+  },
   signup: async (data: SignupFormFields) => {
     try {
       set({ isLoading: true });
-      const response = await fetch("http://localhost:3001/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
       const { message } = await response.json();
       if (!response.ok) throw new Error(message);
@@ -92,7 +103,7 @@ export const useUserStore = create<UserStore>((set) => ({
 
   logout: async () => {
     try {
-      await fetch("http://localhost:3001/api/auth/logout", {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -115,9 +126,12 @@ export const useUserStore = create<UserStore>((set) => ({
 
   checkSession: async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/auth/status", {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/status`,
+        {
+          credentials: "include",
+        },
+      );
 
       if (!response.ok) {
         set({ user: null, isLoading: false });
