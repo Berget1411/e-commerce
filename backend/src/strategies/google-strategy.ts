@@ -23,6 +23,14 @@ passport.use(
             emailVerified: true,
             provider: "google",
           });
+        } else {
+          user = await User.findOneAndUpdate(
+            { email: profile.emails?.[0].value },
+            {
+              isEmailVerified: true,
+            },
+            { upsert: true, new: true }
+          );
         }
 
         return cb(null, user);

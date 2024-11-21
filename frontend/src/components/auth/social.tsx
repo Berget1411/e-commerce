@@ -18,7 +18,7 @@ export default function Social() {
       >
         <FaGoogle />
       </Button>
-      <Button variant={"outline"} className="flex h-14 w-full">
+      <Button variant={"outline"} className="flex h-14 w-full" disabled>
         <FaFacebook />
       </Button>
     </div>

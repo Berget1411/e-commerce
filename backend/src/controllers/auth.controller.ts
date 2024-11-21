@@ -1,7 +1,19 @@
 import { Request, Response } from "express";
 import { CreateUserInput, UserResponse } from "../types/user.type";
-import { findUserByEmail, createUser } from "../services/user.service";
+import {
+  findUserByEmail,
+  createUser,
+  verifyUserEmail,
+} from "../services/user.service";
 import { User } from "../types/user.type";
+import crypto from "crypto";
+import { sendVerificationEmail } from "../services/email.service";
+import { User as UserModel } from "../models/user.model";
+import {
+  createVerificationToken,
+  deleteVerificationToken,
+  findVerificationTokenByToken,
+} from "../services/verificationToken.service";
 export const signup = async (
   req: Request<any, any, CreateUserInput>,
   res: Response<{ message: string; user?: UserResponse }>
@@ -14,6 +26,14 @@ export const signup = async (
   }
 
   const newUser = await createUser({ name, email, password });
+  try {
+    const verificationToken = await createVerificationToken(newUser._id);
+    await sendVerificationEmail(newUser.email, verificationToken.token);
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    // Still return success since user was created, but log the email sending failure
+    // Could also choose to delete the user and return error if email is critical
+  }
   res.status(201).json({
     message: "User created successfully",
     user: {
@@ -24,6 +44,54 @@ export const signup = async (
       role: newUser.role,
     },
   });
+};
+
+export const verifyEmail = async (
+  req: Request<{ token: string }>,
+  res: Response<{ message: string }>
+) => {
+  try {
+    const { token } = req.params;
+    const verificationToken = await findVerificationTokenByToken(token);
+    if (!verificationToken) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired verification token" });
+    }
+
+    await verifyUserEmail(verificationToken.userId.toString());
+
+    await deleteVerificationToken(verificationToken.token);
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const resendVerificationEmail = async (
+  req: Request<{ email: string }>,
+  res: Response<{ message: string }>
+) => {
+  try {
+    const { email } = req.body;
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (user.emailVerified) {
+      return res.status(400).json({ message: "Email already verified" });
+    }
+
+    await deleteVerificationToken(user._id.toString());
+    const verificationToken = await createVerificationToken(
+      user._id.toString()
+    );
+    await sendVerificationEmail(user.email, verificationToken.token);
+    res.status(200).json({ message: "Verification email resent" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const login = async (

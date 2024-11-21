@@ -15,5 +15,13 @@ export const findUserById = async (id: string): Promise<UserType | null> => {
 export const createUser = async (user: CreateUserInput): Promise<UserType> => {
   const { name, email, password } = user;
   const hashedPassword = await hashPassword(password);
-  return await User.create({ name, email, password: hashedPassword });
+  return await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+};
+
+export const verifyUserEmail = async (userId: string) => {
+  return await User.updateOne({ _id: userId }, { emailVerified: true });
 };
