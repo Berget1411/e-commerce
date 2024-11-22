@@ -48,7 +48,7 @@ const tabs = [
 export default function Navbar() {
   const { user, logout } = useUserStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState<string | false>(false);
-
+  console.log(user);
   return (
     <>
       <header className="sticky top-0 z-30 bg-background">
@@ -93,6 +93,13 @@ export default function Navbar() {
                         Account
                       </Link>
                     </DropdownMenuItem>
+                    {user.role === "admin" && (
+                      <DropdownMenuItem>
+                        <Link href="/admin" className="w-full">
+                          Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => logout()}>
                       Logout
                     </DropdownMenuItem>
