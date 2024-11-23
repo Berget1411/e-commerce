@@ -32,4 +32,4 @@ router.post("/", isAuthenticated, isAdmin, createProductController);
 router.put("/:id", isAuthenticated, isAdmin, updateProductController);
 router.delete("/:id", isAuthenticated, isAdmin, deleteProductController);
 
-export default router;
+export { router as productRouter };

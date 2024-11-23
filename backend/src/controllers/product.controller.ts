@@ -131,7 +131,8 @@ export const createProductController = async (req: Request, res: Response) => {
 
     res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error: error });
   }
 };
 
@@ -170,7 +171,8 @@ export const updateProductController = async (req: Request, res: Response) => {
     });
     res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error: error });
   }
 };
 
