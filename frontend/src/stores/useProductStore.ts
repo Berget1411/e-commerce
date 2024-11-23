@@ -4,6 +4,9 @@ import { toast } from "@/hooks/use-toast";
 interface ProductStore {
   isLoading: boolean;
   products: Product[];
+  recommendedProducts: Product[];
+  setProducts: (products: Product[]) => void;
+  setRecommendedProducts: () => void;
   fetchProducts: () => Promise<void>;
   createProduct: (product: Product) => Promise<void>;
   updateProduct: (product: Product) => Promise<void>;
@@ -13,7 +16,14 @@ interface ProductStore {
 export const useProductStore = create<ProductStore>((set) => ({
   isLoading: false,
   products: [],
+  recommendedProducts: [],
   setProducts: (products: Product[]) => set({ products }),
+  setRecommendedProducts: () => {
+    const allProducts = useProductStore.getState().products;
+    const shuffledProducts = [...allProducts].sort(() => 0.5 - Math.random());
+    const recommendedProducts = shuffledProducts.slice(0, 3);
+    set({ recommendedProducts });
+  },
   fetchProducts: async () => {
     set({ isLoading: true });
     try {
