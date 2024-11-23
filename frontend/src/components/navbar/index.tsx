@@ -51,7 +51,7 @@ export default function Navbar() {
   console.log(user);
   return (
     <>
-      <header className="sticky top-0 z-30 bg-background">
+      <header className="max-container sticky top-0 z-30 bg-background">
         <div className="flex items-center justify-between p-4">
           <Link
             href="/"

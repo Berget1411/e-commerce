@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/navbar";
+import Hero from "./hero";
 import { useProductStore } from "@/stores/useProductStore";
 
 export default function Home() {
@@ -9,19 +10,8 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <main>
-        <h1>Products</h1>
-        <div>
-          {products.map((product) => (
-            <div key={product.id}>{product.name}</div>
-          ))}
-        </div>
-        <h2>Recommended Products</h2>
-        <div>
-          {recommendedProducts.map((product) => (
-            <div key={product.id}>{product.name}</div>
-          ))}
-        </div>
+      <main className="container mx-auto py-10">
+        <Hero />
       </main>
     </div>
   );
