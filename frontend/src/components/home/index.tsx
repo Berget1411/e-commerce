@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/navbar";
 import Hero from "./hero";
+import Footer from "@/components/footer";
 import { useProductStore } from "@/stores/useProductStore";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       <main className="container mx-auto py-10">
         <Hero />
       </main>
+      <Footer />
     </div>
   );
 }
