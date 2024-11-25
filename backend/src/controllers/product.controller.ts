@@ -113,6 +113,10 @@ export const createProductController = async (req: Request, res: Response) => {
     if (image) {
       cloudinaryResponse = await cloudinary.uploader.upload(image, {
         folder: "products",
+        transformation: [
+          { width: 800, height: 800, crop: "fill" },
+          { quality: "auto", fetch_format: "auto" },
+        ],
       });
     }
 

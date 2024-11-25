@@ -30,7 +30,7 @@ export default function ProductCard({
           alt={product.name}
           width={120}
           height={120}
-          className="aspect-square object-cover transition-transform"
+          className="aspect-square object-contain transition-transform"
         />
       </CardContent>
     </Card>

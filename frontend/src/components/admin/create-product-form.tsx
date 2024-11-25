@@ -36,6 +36,54 @@ import { useEffect } from "react";
 
 type CreateProductFormFields = z.infer<typeof productSchema>;
 
+const compressImage = (file: File): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image() as HTMLImageElement;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d")!;
+
+        // Max dimensions while preserving aspect ratio
+        const maxDimension = 1024;
+        const aspectRatio = img.width / img.height;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDimension) {
+            width = maxDimension;
+            height = width / aspectRatio;
+          }
+        } else {
+          if (height > maxDimension) {
+            height = maxDimension;
+            width = height * aspectRatio;
+          }
+        }
+
+        // Set canvas dimensions to match scaled image
+        canvas.width = width;
+        canvas.height = height;
+
+        // Use high quality image scaling
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
+        // Draw image maintaining aspect ratio
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to PNG with maximum quality
+        resolve(canvas.toDataURL("image/png", 1.0));
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 export function ProductForm({
   open,
   onOpenChange,
@@ -94,10 +142,14 @@ export function ProductForm({
   }, [product, form]);
 
   const onSubmit = async (data: CreateProductFormFields) => {
+    const formattedData = {
+      ...data,
+      discount: data.discount === 0 ? undefined : +data.discount,
+    };
     if (product?._id) {
-      await updateProduct({ ...data, _id: product._id } as Product);
+      await updateProduct({ ...formattedData, _id: product._id } as Product);
     } else {
-      await createProduct(data as Product);
+      await createProduct(formattedData as Product);
     }
     onOpenChange(false);
   };
@@ -284,14 +336,11 @@ export function ProductForm({
                         <Input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => {
+                          onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                field.onChange(reader.result);
-                              };
-                              reader.readAsDataURL(file);
+                              const compressed = await compressImage(file);
+                              field.onChange(compressed);
                             }
                           }}
                         />

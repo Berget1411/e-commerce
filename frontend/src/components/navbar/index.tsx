@@ -52,7 +52,7 @@ export default function Navbar() {
   return (
     <>
       <header className="max-container sticky top-0 z-30 bg-background">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between py-4">
           <Link
             href="/"
             className="m-0 text-2xl font-bold transition-opacity hover:opacity-80"
@@ -122,7 +122,7 @@ export default function Navbar() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="flex items-center gap-4 p-4">
+        <div className="flex items-center gap-4 pb-8">
           {tabs.map((tab) => (
             <Link
               href={tab.href}

@@ -46,7 +46,7 @@ export default function Hero() {
           Discover Stylish shoe arrivals, quality comfort, and innovation for
           your active life.
         </p>
-        <Link href="/products">
+        <Link href="/home/products">
           <Button className="w-full sm:w-auto">Shop now</Button>
         </Link>
         <div className="mt-12 flex flex-wrap justify-center gap-8 md:mt-16 md:justify-start md:gap-16">
@@ -72,7 +72,7 @@ export default function Hero() {
             alt="shoe collection"
             width={400}
             height={400}
-            className="aspect-square cursor-pointer rounded-xl object-cover transition-transform max-md:w-[200px]"
+            className="aspect-square cursor-pointer rounded-xl object-contain transition-transform max-md:w-[200px]"
           />
         </Link>
         <div className="absolute -bottom-12 flex gap-2 overflow-x-auto px-4 sm:-bottom-20 md:-bottom-0 md:gap-4 lg:-bottom-16 lg:gap-6">

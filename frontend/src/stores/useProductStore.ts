@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Product } from "@/types/product";
 import { toast } from "@/hooks/use-toast";
+import { Review } from "@/types/Review";
 interface ProductStore {
   isLoading: boolean;
   products: Product[];
@@ -11,6 +12,12 @@ interface ProductStore {
   createProduct: (product: Product) => Promise<void>;
   updateProduct: (product: Product) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
+  getProductById: (id: string) => Promise<Product | undefined>;
+  createReview: (review: Review) => Promise<void>;
+  updateReview: (review: Review) => Promise<void>;
+  deleteReview: (reviewId: string, productId: string) => Promise<void>;
+  currentProduct: Product | null;
+  setCurrentProduct: (product: Product | null) => void;
 }
 
 export const useProductStore = create<ProductStore>((set) => ({
@@ -108,4 +115,112 @@ export const useProductStore = create<ProductStore>((set) => ({
       console.error("Error deleting product:", error);
     }
   },
+  getProductById: async (id: string): Promise<Product | undefined> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/products/${id}`,
+        {
+          credentials: "include",
+        },
+      );
+      const product = await response.json();
+      return product;
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      return undefined;
+    }
+  },
+  createReview: async ({ rating, comment, productId }: Review) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/reviews`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ rating, comment, productId }),
+        },
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: data.message,
+        });
+        return;
+      }
+
+      set({ currentProduct: data.product });
+
+      toast({
+        title: "Success",
+        description: data.message,
+      });
+    } catch (error) {
+      console.error("Error creating review:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Something went wrong while creating your review",
+      });
+    }
+  },
+  updateReview: async ({ _id, rating, comment, productId }: Review) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/reviews/${_id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ rating, comment, productId }),
+        },
+      );
+      const { message, error, product } = await response.json();
+      if (!response.ok) throw new Error(error);
+
+      set({ currentProduct: product });
+
+      toast({
+        title: "Success",
+        description: message,
+      });
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  },
+  deleteReview: async (reviewId: string, productId: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/reviews/${reviewId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId }),
+        },
+      );
+      const { message, error, product } = await response.json();
+      if (!response.ok) throw new Error(error);
+
+      set({ currentProduct: product });
+
+      toast({
+        title: "Success",
+        description: message,
+      });
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
+  },
+  currentProduct: null,
+  setCurrentProduct: (product) => set({ currentProduct: product }),
 }));

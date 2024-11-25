@@ -15,7 +15,7 @@ import {
 
 const router = Router();
 
-router.get("/", isAuthenticated, isAdmin, getAllProductsController);
+router.get("/", getAllProductsController);
 router.get("/:id", getProductByIdController);
 router.get("/featured", getFeaturedProductsController);
 router.put(

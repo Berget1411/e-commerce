@@ -1,13 +1,24 @@
+import { Review } from "./Review";
+
 export type Product = {
+  id: string;
   _id: string;
   name: string;
   description: string;
-  category: string;
-  target_audience: "men" | "women" | "kids";
-  brand: string;
   price: number;
-  quantity: number;
-  discount: number;
-  featured: boolean;
-  image: string;
+  salePrice?: number;
+  discount?: number;
+  category: string;
+  brand: string;
+  target_audience: string;
+  imageUrl: string;
+  rating: number;
+  stock: number;
+  reviews: Review[];
+};
+
+export type FilterOptions = {
+  category: string[];
+  brand: string[];
+  target_audience: string[];
 };

@@ -19,6 +19,7 @@ interface UserStore {
   user: UserResponse | null;
   isLoading: boolean;
   setUser: (user: UserResponse | null) => void;
+  getUserById: (userId: string) => Promise<UserResponse | null>;
   login: (data: LoginFormFields) => Promise<boolean>;
   loginGoogle: () => void;
   signup: (data: SignupFormFields) => Promise<boolean>;
@@ -35,7 +36,16 @@ export const useUserStore = create<UserStore>((set) => ({
   user: null,
   isLoading: true,
   setUser: (user) => set({ user }),
-
+  getUserById: async (userId: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users/${userId}`,
+      );
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  },
   login: async (data: LoginFormFields) => {
     try {
       set({ isLoading: true });

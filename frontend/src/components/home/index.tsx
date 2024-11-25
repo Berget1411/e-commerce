@@ -9,12 +9,8 @@ export default function Home() {
   const { products, recommendedProducts } = useProductStore();
   console.log(recommendedProducts);
   return (
-    <div>
-      <Navbar />
-      <main className="container mx-auto py-10">
-        <Hero />
-      </main>
-      <Footer />
-    </div>
+    <main className="container mx-auto py-10">
+      <Hero />
+    </main>
   );
 }
