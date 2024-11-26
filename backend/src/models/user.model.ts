@@ -10,7 +10,23 @@ const userSchema = new Schema({
   // sparse: true means the unique index allows multiple documents to have no value for this field
   // This is useful for optional unique fields like googleId that only exist for Google OAuth users
   googleId: { type: String, sparse: true },
-  likedProducts: { type: [Schema.Types.ObjectId], default: [] },
+  likedProducts: {
+    type: [Schema.Types.ObjectId],
+    ref: "Product",
+    default: [],
+  },
+  cartItems: [
+    {
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      product: {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    },
+  ],
 });
 
 export const User = model("User", userSchema);
