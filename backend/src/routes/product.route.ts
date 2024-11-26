@@ -11,25 +11,30 @@ import {
   deleteProductController,
   getRecommendedProductsController,
   getProductByCategoryController,
+  getLikedProductsController,
+  toggleLikeController,
 } from "../controllers/product.controller";
 
 const router = Router();
 
-router.get("/", getAllProductsController);
-router.get("/:id", getProductByIdController);
 router.get("/featured", getFeaturedProductsController);
+router.get("/recommended", getRecommendedProductsController);
+router.get("/liked", isAuthenticated, getLikedProductsController);
+router.get("/category/:category", getProductByCategoryController);
+router.get("/:id", getProductByIdController);
+router.get("/", getAllProductsController);
+
+router.post("/", isAuthenticated, isAdmin, createProductController);
+router.post("/like/:productId", isAuthenticated, toggleLikeController);
+
 router.put(
   "/toggle-featured/:id",
   isAuthenticated,
   isAdmin,
   toggleFeaturedController
 );
-router.get("/recommended", getRecommendedProductsController);
-router.get("/category/:category", getProductByCategoryController);
-
-router.post("/", isAuthenticated, isAdmin, createProductController);
-
 router.put("/:id", isAuthenticated, isAdmin, updateProductController);
+
 router.delete("/:id", isAuthenticated, isAdmin, deleteProductController);
 
 export { router as productRouter };

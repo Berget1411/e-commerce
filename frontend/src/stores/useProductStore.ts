@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { Product } from "@/types/product";
 import { toast } from "@/hooks/use-toast";
 import { Review } from "@/types/Review";
+import { useUserStore } from "./useUserStore";
 interface ProductStore {
   isLoading: boolean;
   products: Product[];
@@ -18,6 +19,7 @@ interface ProductStore {
   deleteReview: (reviewId: string, productId: string) => Promise<void>;
   currentProduct: Product | null;
   setCurrentProduct: (product: Product | null) => void;
+  toggleLike: (productId: string) => Promise<void>;
 }
 
 export const useProductStore = create<ProductStore>((set) => ({
@@ -223,4 +225,31 @@ export const useProductStore = create<ProductStore>((set) => ({
   },
   currentProduct: null,
   setCurrentProduct: (product) => set({ currentProduct: product }),
+  toggleLike: async (productId: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/products/like/${productId}`,
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
+      const { message, error } = await response.json();
+      if (!response.ok) throw new Error(error);
+
+      await useUserStore.getState().getLikedProducts();
+
+      toast({
+        title: "Success",
+        description: message,
+      });
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to toggle like",
+      });
+    }
+  },
 }));

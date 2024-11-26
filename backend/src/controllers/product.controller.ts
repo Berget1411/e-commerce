@@ -13,6 +13,9 @@ import {
 import { redis } from "../lib/redis";
 import cloudinary from "../lib/cloudinary";
 
+import { getLikedProducts, toggleLike } from "../services/user.service";
+import { User } from "../types/user.type";
+
 export const getAllProductsController = async (req: Request, res: Response) => {
   try {
     const products = await getAllProducts();
@@ -202,5 +205,45 @@ export const deleteProductController = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Product deleted" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const toggleLikeController = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const user = req.user as User;
+
+  try {
+    const result = await toggleLike(user._id, productId);
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getLikedProductsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const user = req.user as User;
+
+    if (!user?._id) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    const likedProducts = await getLikedProducts(user._id);
+    console.log(likedProducts);
+
+    if (!likedProducts || likedProducts.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json(likedProducts);
+  } catch (error) {
+    console.error("Error in getLikedProductsController:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 };

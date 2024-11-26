@@ -77,7 +77,9 @@ export default function Navbar() {
               <LuShoppingCart />
             </Button>
             <Button variant="ghost" size="icon">
-              <LuHeart />
+              <Link href="/home/liked">
+                <LuHeart />
+              </Link>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

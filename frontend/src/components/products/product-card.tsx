@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -7,17 +9,41 @@ import { TbShoppingBagPlus } from "react-icons/tb";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { useUserStore } from "@/stores/useUserStore";
+import { useProductStore } from "@/stores/useProductStore";
+import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 type ProductCardProps = {
   product: Product;
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { likedProducts, getLikedProducts } = useUserStore();
+  const { toggleLike } = useProductStore();
+
+  useEffect(() => {
+    getLikedProducts();
+  }, [getLikedProducts]);
+
+  const isLiked =
+    likedProducts?.some((productId) => productId === product._id) || false;
+
   const discountedPrice = Number(
     (product.price - (product.price * (product.discount ?? 0)) / 100).toFixed(
       2,
     ),
   );
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toggleLike(product._id);
+  };
+
+  const handleAddToBag = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Add to bag logic here
+  };
 
   return (
     <Link href={`/home/products/${product._id}`}>
@@ -29,6 +55,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 bg-white/80 backdrop-blur-sm hover:bg-white hover:text-primary"
+                onClick={handleAddToBag}
               >
                 <TbShoppingBagPlus className="h-4 w-4" />
               </Button>
@@ -38,8 +65,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 bg-white/80 backdrop-blur-sm hover:bg-white hover:text-primary"
+                onClick={handleLike}
               >
-                <LuHeart className="h-4 w-4" />
+                <LuHeart className={cn("h-4 w-4", isLiked && "text-red-500")} />
               </Button>
             </div>
             <Image

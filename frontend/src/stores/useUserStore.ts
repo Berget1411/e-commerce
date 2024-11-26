@@ -9,6 +9,7 @@ import {
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import router from "next/router";
+import { Product } from "@/types/product";
 
 type LoginFormFields = z.infer<typeof loginSchema>;
 type SignupFormFields = z.infer<typeof signUpSchema>;
@@ -18,6 +19,7 @@ type NewPasswordFormFields = z.infer<typeof newPasswordSchema>;
 interface UserStore {
   user: UserResponse | null;
   isLoading: boolean;
+  likedProducts: Product[];
   setUser: (user: UserResponse | null) => void;
   getUserById: (userId: string) => Promise<UserResponse | null>;
   login: (data: LoginFormFields) => Promise<boolean>;
@@ -30,10 +32,12 @@ interface UserStore {
     data: NewPasswordFormFields,
     token: string,
   ) => Promise<boolean>;
+  getLikedProducts: () => Promise<Product[]>;
 }
 
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
+  likedProducts: [],
   isLoading: true,
   setUser: (user) => set({ user }),
   getUserById: async (userId: string) => {
@@ -237,6 +241,26 @@ export const useUserStore = create<UserStore>((set) => ({
           error instanceof Error ? error.message : "Something went wrong",
       });
       return false;
+    }
+  },
+  getLikedProducts: async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/products/liked`,
+        {
+          credentials: "include",
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch liked products");
+      }
+      const { likedProducts } = await response.json();
+
+      set({ likedProducts });
+      return likedProducts;
+    } catch (error) {
+      console.error("Error fetching liked products:", error);
+      return [];
     }
   },
 }));
