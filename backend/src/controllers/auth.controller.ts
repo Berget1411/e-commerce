@@ -50,6 +50,7 @@ export const signup = async (
       email: newUser.email,
       emailVerified: newUser.emailVerified,
       role: newUser.role,
+      cartItems: [],
     },
   });
 };
@@ -115,6 +116,7 @@ export const login = async (
       email: user.email,
       emailVerified: user.emailVerified,
       role: user.role,
+      cartItems: user.cartItems,
     },
   });
 };
@@ -132,6 +134,7 @@ export const status = async (
       email: user.email,
       emailVerified: user.emailVerified,
       role: user.role,
+      cartItems: user.cartItems,
     },
   });
 };

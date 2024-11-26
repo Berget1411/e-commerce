@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { LuHeart } from "react-icons/lu";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function ProductMain({ product }: { product: Product }) {
   const discountedPrice = Number(
@@ -10,7 +11,7 @@ export default function ProductMain({ product }: { product: Product }) {
       2,
     ),
   );
-
+  const { addToCart } = useCartStore();
   return (
     <div className="container mx-auto py-8">
       <div className="grid gap-8 md:grid-cols-2">
@@ -71,7 +72,11 @@ export default function ProductMain({ product }: { product: Product }) {
             </span>
           </div>
           <div className="flex gap-2">
-            <Button size="lg" className="w-full">
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => addToCart(product._id)}
+            >
               Add to Cart
             </Button>
             <Button

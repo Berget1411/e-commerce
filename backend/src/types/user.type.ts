@@ -1,3 +1,5 @@
+import { CartItem } from "./cart";
+
 export type User = {
   _id: any;
   name: string;
@@ -5,6 +7,7 @@ export type User = {
   emailVerified: boolean;
   password: string;
   role: string;
+  cartItems: CartItem[];
 };
 
 export type CreateUserInput = {

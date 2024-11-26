@@ -1,5 +1,7 @@
 import { User } from "../types";
-import Product from "../models/product.model";
+import { Product } from "../models/product.model";
+import { CartItem } from "../types/cart";
+import { User as UserModel } from "../models/user.model";
 
 export const getCartProductsByUserId = async (
   userCartItems: User["cartItems"]
@@ -22,6 +24,33 @@ export const findCartItemByProductId = async (
 };
 
 export const removeAllFromCart = async (productId: string, user: User) => {
-  user.cartItems = user.cartItems.filter((item) => item.id !== productId);
-  await user.save();
+  const userDoc = await UserModel.findById(user._id);
+  if (!userDoc) throw new Error("User not found");
+
+  userDoc.cartItems.pull({ id: productId });
+  await userDoc.save();
+  return userDoc.cartItems;
+};
+
+export const addToCart = async (
+  cartItem: CartItem,
+  user: User,
+  productId: string
+) => {
+  const userDoc = await UserModel.findById(user._id);
+  if (!userDoc) throw new Error("User not found");
+
+  if (cartItem) {
+    const existingItem = userDoc.cartItems.find(
+      (item) => item.id === productId
+    );
+    if (existingItem) {
+      existingItem.quantity += 1;
+    }
+  } else {
+    userDoc.cartItems.push({ id: productId, quantity: 1 });
+  }
+
+  await userDoc.save();
+  return userDoc.cartItems;
 };

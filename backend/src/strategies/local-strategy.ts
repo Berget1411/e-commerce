@@ -29,6 +29,7 @@ passport.deserializeUser(async (id: string, done) => {
       email: safeUser.email,
       emailVerified: safeUser.emailVerified,
       role: safeUser.role,
+      cartItems: safeUser.cartItems,
     } as Express.User);
   } catch (error) {
     done(error as Error, null);
