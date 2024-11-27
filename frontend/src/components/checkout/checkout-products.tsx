@@ -9,7 +9,7 @@ export default function CheckoutProducts({
   cartProducts: any[];
 }) {
   return (
-    <Card className="w-2/3">
+    <Card className="w-2/3 max-md:w-full">
       <CardHeader>
         <CardTitle className="mb-2">Checkout</CardTitle>
         <Separator className="my-4" />

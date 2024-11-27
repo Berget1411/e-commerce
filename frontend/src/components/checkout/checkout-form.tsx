@@ -47,7 +47,7 @@ export default function CheckoutForm({
   };
 
   return (
-    <Card className="w-1/3">
+    <Card className="w-1/3 max-md:w-full">
       <CardHeader>
         <CardTitle>Delivery</CardTitle>
       </CardHeader>

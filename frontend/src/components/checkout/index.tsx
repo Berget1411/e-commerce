@@ -38,7 +38,7 @@ export default function CheckoutPage() {
     return acc + cartItem!.quantity;
   }, 0);
   return (
-    <div className="flex w-[1000px] gap-4">
+    <div className="flex w-[1000px] gap-4 max-md:w-full max-md:flex-col max-md:px-4">
       <CheckoutProducts cartProducts={cartProducts} />
       <CheckoutForm totalAmount={totalAmount} totalItems={totalItems} />
     </div>
