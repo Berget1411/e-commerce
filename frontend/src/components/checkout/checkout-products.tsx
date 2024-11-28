@@ -3,10 +3,18 @@ import CartProduct from "@/components/navbar/cart-product";
 
 import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
 
+type CartProduct = {
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+};
+
 export default function CheckoutProducts({
   cartProducts,
 }: {
-  cartProducts: any[];
+  cartProducts: CartProduct[];
 }) {
   return (
     <Card className="w-2/3 max-md:w-full">

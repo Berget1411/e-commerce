@@ -6,6 +6,8 @@ import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import Link from "next/link";
+import { usePaymentStore } from "@/stores/usePaymentStore";
+import { useCartStore } from "@/stores/useCartStore";
 export default function CheckoutForm({
   totalAmount,
   totalItems,
@@ -13,6 +15,8 @@ export default function CheckoutForm({
   totalAmount: number;
   totalItems: number;
 }) {
+  const { handlePayment, isLoading } = usePaymentStore();
+  const { cartItems } = useCartStore();
   const [delivery, setDelivery] = useState<string>("free");
   const [couponCode, setCouponCode] = useState("");
   const [totalAmountAfterTaxAndDelivery, setTotalAmountAfterTaxAndDelivery] =
@@ -43,7 +47,7 @@ export default function CheckoutForm({
 
   const handleApplyCoupon = () => {
     // TODO: Implement coupon logic
-    console.log("Applying coupon:", couponCode);
+    handlePayment(cartItems);
   };
 
   return (
@@ -113,7 +117,13 @@ export default function CheckoutForm({
           <p>${totalAmountAfterTaxAndDelivery}</p>
         </div>
         <div className="space-y-2">
-          <Button className="w-full">Checkout</Button>
+          <Button
+            onClick={() => handlePayment(cartItems)}
+            className="w-full"
+            disabled={isLoading}
+          >
+            Checkout
+          </Button>
           <Button variant="outline" className="w-full">
             <Link href="/home/products">Continue shopping</Link>
           </Button>
