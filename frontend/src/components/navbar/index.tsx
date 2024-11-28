@@ -52,7 +52,7 @@ export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState<string | false>(false);
   console.log(user);
   return (
-    <header className="max-container sticky top-0 z-30 bg-background">
+    <header className="max-container sticky top-0 z-30 bg-transparent">
       <div className="flex items-center justify-between py-4">
         <Link
           href="/"

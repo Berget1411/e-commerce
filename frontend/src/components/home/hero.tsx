@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import ProductCard from "./product-card";
+import { AuroraBackground } from "../ui/aurora-background";
 
 const STATS = [
   {
@@ -32,10 +33,11 @@ export default function Hero() {
 
   return (
     <section id="home" className="max-container flex max-md:flex-col">
+      <AuroraBackground className="absolute inset-0" />
       <div className="relative flex w-full flex-col items-center justify-center text-center md:w-3/5 md:items-start md:pt-20 md:text-left">
         <p className="text-lg text-primary md:text-xl">Our Summer Collection</p>
         <h1 className="mt-6 text-4xl font-bold md:mt-8 md:text-5xl lg:text-6xl">
-          <span className="relative z-10 pr-4 md:pr-10 xl:whitespace-nowrap xl:bg-white">
+          <span className="relative z-10 pr-4 md:pr-10 xl:whitespace-nowrap">
             The New Arrival
           </span>
           <br />
