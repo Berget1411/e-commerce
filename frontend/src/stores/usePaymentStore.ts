@@ -37,17 +37,19 @@ interface CheckoutResponse {
 interface PaymentStore {
   isLoading: boolean;
   order: Order | undefined;
+  orders: Order[] | undefined;
   error: string | undefined;
   orderProducts: CartProduct[];
   setIsLoading: (isLoading: boolean) => void;
-  handlePayment: (products: CartItem[]) => Promise<CheckoutResponse>;
   confirmOrder: (sessionId: string, products: Product[]) => Promise<void>;
   resetState: () => void;
+  getOrders: () => Promise<void>;
 }
 
 export const usePaymentStore = create<PaymentStore>((set) => ({
   isLoading: false,
   order: undefined,
+  orders: undefined,
   error: undefined,
   orderProducts: [],
 
@@ -122,56 +124,21 @@ export const usePaymentStore = create<PaymentStore>((set) => ({
       set({ isLoading: false });
     }
   },
-
-  handlePayment: async (products: CartItem[]) => {
+  getOrders: async () => {
     try {
-      set({ isLoading: true });
-
-      // Only send product IDs and quantities to backend
-      const checkoutProducts = products.map((item) => ({
-        productId: item.productId,
-        quantity: Number(item.quantity) || 1,
-      }));
-
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/payment/create-checkout-session`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/payment/orders`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ products: checkoutProducts }),
           credentials: "include",
         },
       );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `Payment failed: ${response.statusText}`,
-        );
-      }
-
       const data = await response.json();
-
-      const stripe = await loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string,
-      );
-
-      if (!stripe) {
-        throw new Error("Stripe failed to initialize");
-      }
-
-      await stripe.redirectToCheckout({
-        sessionId: data.id,
-      });
-
-      return data as CheckoutResponse;
-    } catch (error) {
-      console.error("Payment processing error:", error);
-      throw error;
-    } finally {
-      set({ isLoading: false });
+      set({ orders: data.orders });
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to get orders";
+      set({ error: errorMessage });
+      throw err;
     }
   },
 }));

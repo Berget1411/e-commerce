@@ -5,5 +5,11 @@ export default function AccountLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <RequireAuth>{children}</RequireAuth>;
+  return (
+    <RequireAuth>
+      <div className="flex h-screen items-center justify-center">
+        <div className="w-full max-w-md">{children}</div>
+      </div>
+    </RequireAuth>
+  );
 }

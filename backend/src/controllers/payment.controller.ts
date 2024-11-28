@@ -149,3 +149,21 @@ export const checkoutSuccessController = async (
     });
   }
 };
+
+export const getOrdersController = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as User;
+    const currentUser = await UserModel.findById(user._id);
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const orders = await Order.find({ user: currentUser._id });
+    return res.status(200).json({ orders });
+  } catch (error) {
+    console.error("Error getting orders:", error);
+    return res.status(500).json({
+      message: "Error getting orders",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
