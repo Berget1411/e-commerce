@@ -13,6 +13,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useProductStore } from "@/stores/useProductStore";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
+import { useCartStore } from "@/stores/useCartStore";
 
 type ProductCardProps = {
   product: Product;
@@ -21,13 +22,15 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   const { likedProducts, getLikedProducts } = useUserStore();
   const { toggleLike } = useProductStore();
+  const { addToCart } = useCartStore();
 
   useEffect(() => {
     getLikedProducts();
   }, [getLikedProducts]);
 
   const isLiked =
-    likedProducts?.some((productId) => productId === product._id) || false;
+    likedProducts?.some((likedProduct) => likedProduct._id === product._id) ||
+    false;
 
   const discountedPrice = Number(
     (product.price - (product.price * (product.discount ?? 0)) / 100).toFixed(
@@ -42,7 +45,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToBag = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Add to bag logic here
+    addToCart(product._id);
   };
 
   return (

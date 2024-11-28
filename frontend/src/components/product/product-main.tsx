@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { LuHeart } from "react-icons/lu";
 import { useCartStore } from "@/stores/useCartStore";
+import { useProductStore } from "@/stores/useProductStore";
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function ProductMain({ product }: { product: Product }) {
   const discountedPrice = Number(
@@ -12,6 +14,15 @@ export default function ProductMain({ product }: { product: Product }) {
     ),
   );
   const { addToCart } = useCartStore();
+  const { toggleLike } = useProductStore();
+  const { likedProducts } = useUserStore();
+  const isLiked =
+    likedProducts?.some((likedProduct) => likedProduct._id === product._id) ||
+    false;
+
+  const averageRating =
+    product.reviews.reduce((sum, review) => sum + review.rating, 0) /
+    product.reviews.length;
   return (
     <div className="container mx-auto py-8">
       <div className="grid gap-8 md:grid-cols-2">
@@ -39,15 +50,13 @@ export default function ProductMain({ product }: { product: Product }) {
                   <Star
                     key={i}
                     className={`h-5 w-5 ${
-                      i < product.rating ? "fill-primary" : "fill-gray-200"
+                      i < averageRating ? "fill-primary" : "fill-gray-200"
                     }`}
                   />
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">
-                {product.rating
-                  ? `${product.rating} out of 5`
-                  : "No reviews yet"}
+                {averageRating ? `${averageRating} out of 5` : "No reviews yet"}
               </span>
             </div>
           </div>
@@ -83,8 +92,9 @@ export default function ProductMain({ product }: { product: Product }) {
               size="icon"
               variant="outline"
               className="aspect-square h-10 w-10"
+              onClick={() => toggleLike(product._id)}
             >
-              <LuHeart className="h-6 w-6" />
+              <LuHeart className={`h-6 w-6 ${isLiked ? "text-primary" : ""}`} />
             </Button>
           </div>
         </div>
