@@ -13,7 +13,7 @@ export type Product = {
   target_audience: string;
   image: string;
   rating: number;
-  stock: number;
+  quantity: number;
   reviews: Review[];
 };
 

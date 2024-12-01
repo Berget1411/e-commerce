@@ -20,7 +20,7 @@ import { Product } from "@/types/product";
 import { StarIcon } from "lucide-react";
 import ReviewForm from "./review-form";
 import ReviewCard from "./review-card";
-import { type Review } from "@/types/Review";
+
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { LuPlus } from "react-icons/lu";

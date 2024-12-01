@@ -1,13 +1,7 @@
 "use client";
 
 import { Review } from "@/types/Review";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import {
   Dialog,
   DialogContent,

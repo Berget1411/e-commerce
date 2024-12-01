@@ -3,23 +3,15 @@ import SelectFilter from "./select-filter";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import { type Filters } from "@/utils/product-filters";
 
-const SORT_OPTIONS = {
-  NEWEST: "newest",
-  PRICE_HIGH: "highest-price",
-  PRICE_LOW: "lowest-price",
-} as const;
-
-type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
-
-type Filters = {
-  category: string;
-  brand: string;
-  targetAudience: string;
-  minPrice: number;
-  maxPrice: number;
-  onSale: boolean;
-  sortBy: SortOption;
+type ProductFilterProps = {
+  filters: Filters;
+  setFilters: (filters: Filters) => void;
+  priceRange: { min: number; max: number };
+  existingCategories: string[];
+  existingBrands: string[];
+  existingTargetAudiences: string[];
 };
 
 export default function ProductFilter({
@@ -29,18 +21,11 @@ export default function ProductFilter({
   existingCategories,
   existingBrands,
   existingTargetAudiences,
-}: {
-  filters: Filters;
-  setFilters: (filters: Filters) => void;
-  priceRange: { min: number; max: number };
-  existingCategories: string[];
-  existingBrands: string[];
-  existingTargetAudiences: string[];
-}) {
+}: ProductFilterProps) {
   const sortOptions = [
-    { value: SORT_OPTIONS.NEWEST, label: "Newest" },
-    { value: SORT_OPTIONS.PRICE_HIGH, label: "Highest Price" },
-    { value: SORT_OPTIONS.PRICE_LOW, label: "Lowest Price" },
+    { value: "newest", label: "Newest" },
+    { value: "highest-price", label: "Highest Price" },
+    { value: "lowest-price", label: "Lowest Price" },
   ];
 
   return (
@@ -50,7 +35,7 @@ export default function ProductFilter({
         options={sortOptions.map((opt) => opt.value)}
         value={filters.sortBy}
         onChange={(value) =>
-          setFilters({ ...filters, sortBy: value as SortOption })
+          setFilters({ ...filters, sortBy: value as typeof filters.sortBy })
         }
         optionLabels={Object.fromEntries(
           sortOptions.map((opt) => [opt.value, opt.label]),

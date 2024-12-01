@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Product } from "@/types/product";
 import { LuHeart } from "react-icons/lu";
 import { TbShoppingBagPlus } from "react-icons/tb";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+
 import { useUserStore } from "@/stores/useUserStore";
 import { useProductStore } from "@/stores/useProductStore";
 import { cn } from "@/lib/utils";
@@ -80,7 +80,7 @@ export function ProductCard({ product }: ProductCardProps) {
               className="object-contain"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            {product.discount > 0 && (
+            {(product.discount ?? 0) > 0 && (
               <Badge
                 className="absolute bottom-2 left-2 text-primary"
                 variant="secondary"
@@ -93,7 +93,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <h3 className="font-semibold">{product.name}</h3>
             <p className="text-sm text-muted-foreground">{product.brand}</p>
             <div className="relative mt-2 flex items-center gap-2">
-              {product.discount > 0 ? (
+              {(product.discount ?? 0) > 0 ? (
                 <>
                   <p className="font-bold text-red-500">${discountedPrice}</p>
                   <p className="text-xs text-muted-foreground line-through">
