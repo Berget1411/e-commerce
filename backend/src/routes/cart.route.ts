@@ -9,9 +9,9 @@ import {
 
 const router = Router();
 
-router.get("/", isAuthenticated, getCartProductsController as any);
-router.post("/", isAuthenticated, addToCartController as any);
-router.delete("/", isAuthenticated, removeAllFromCartController as any);
-router.put("/:id", isAuthenticated, updateQuantityController as any);
+router.get("/", isAuthenticated, getCartProductsController);
+router.post("/", isAuthenticated, addToCartController);
+router.delete("/", isAuthenticated, removeAllFromCartController);
+router.put("/:id", isAuthenticated, updateQuantityController);
 
 export { router as cartRouter };

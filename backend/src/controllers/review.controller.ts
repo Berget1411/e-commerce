@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import type { User } from "../models/user.model";
+import type { User } from "../types/user.type";
 import {
   createReview,
   deleteReview,
@@ -26,11 +26,14 @@ export const getReviewsByProductIdController = async (
 export const createReviewController = async (req: Request, res: Response) => {
   try {
     const { productId, rating, comment } = req.body;
-    const user = req.user as typeof User;
+    const user = req.user as User;
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     const existingReview = await getReviewByProductIdAndUserId(
       productId,
-      user._id
+      user._id.toString()
     );
     if (existingReview) {
       return res.status(400).json({

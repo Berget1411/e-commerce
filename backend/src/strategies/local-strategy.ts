@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { findUserByEmail, findUserById } from "../services/user.service";
 import { comparePassword } from "../utils/helpers";
+import { User as UserModel } from "../models/user.model";
 
 passport.serializeUser((user: Express.User, done) => {
   console.log("Serializing user:", user);
@@ -24,12 +25,13 @@ passport.deserializeUser(async (id: string, done) => {
     const { password: _, ...safeUser } = userObject;
 
     done(null, {
-      _id: safeUser._id.toString(),
+      _id: safeUser._id,
       name: safeUser.name,
       email: safeUser.email,
       emailVerified: safeUser.emailVerified,
       role: safeUser.role,
       cartItems: safeUser.cartItems,
+      likedProducts: safeUser.likedProducts || [],
     } as Express.User);
   } catch (error) {
     done(error as Error, null);
@@ -46,7 +48,7 @@ export default passport.use(
 
       const isPasswordValid = await comparePassword(
         password,
-        user.password as string
+        (user as InstanceType<typeof UserModel>).password as string
       );
       if (!isPasswordValid) {
         return done(new Error("Invalid Credentials"), false);

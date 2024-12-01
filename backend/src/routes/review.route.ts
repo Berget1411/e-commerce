@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, RequestHandler } from "express";
 import {
   createReviewController,
   deleteReviewController,
@@ -9,8 +9,27 @@ import { isAuthenticated } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/", isAuthenticated, createReviewController);
-router.get("/:productId", getReviewsByProductIdController);
-router.put("/:reviewId", isAuthenticated, updateReviewController);
-router.delete("/:reviewId", isAuthenticated, deleteReviewController);
+router.post(
+  "/",
+  isAuthenticated as unknown as RequestHandler,
+  createReviewController as unknown as RequestHandler
+);
+
+router.get(
+  "/:productId",
+  getReviewsByProductIdController as unknown as RequestHandler
+);
+
+router.put(
+  "/:reviewId",
+  isAuthenticated as unknown as RequestHandler,
+  updateReviewController as unknown as RequestHandler
+);
+
+router.delete(
+  "/:reviewId",
+  isAuthenticated as unknown as RequestHandler,
+  deleteReviewController as unknown as RequestHandler
+);
+
 export { router as reviewRouter };

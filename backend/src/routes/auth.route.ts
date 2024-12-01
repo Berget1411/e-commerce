@@ -13,9 +13,7 @@ import { validateRequest } from "../middleware/validation";
 import { SignupValidationSchema, LoginValidationSchema } from "../validation";
 import passport from "passport";
 import { isAuthenticated } from "../middleware/auth.middleware";
-import crypto from "crypto";
-import { VerificationToken } from "../models/verification-token.model";
-import { sendVerificationEmail } from "../services/email.service";
+import { RequestHandler } from "express";
 
 const router = Router();
 
@@ -24,7 +22,7 @@ router.post(
   "/login",
   validateRequest(LoginValidationSchema),
   passport.authenticate("local"),
-  login
+  login as RequestHandler
 );
 router.get(
   "/login/federated/google",
@@ -40,14 +38,14 @@ router.get(
     failureRedirect: `${process.env.CLIENT_URL}/login?error=oauth-failed`,
   })
 );
-router.get("/status", isAuthenticated, status);
-router.post("/logout", logout);
+router.get("/status", isAuthenticated, status as RequestHandler);
+router.post("/logout", logout as RequestHandler);
 
-router.get("/verify-email/:token", verifyEmail);
+router.get("/verify-email/:token", verifyEmail as RequestHandler);
 
-router.post("/resend-verification", resendVerificationEmail);
+router.post("/resend-verification", resendVerificationEmail as RequestHandler);
 
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
+router.post("/forgot-password", forgotPassword as RequestHandler);
+router.post("/reset-password", resetPassword as RequestHandler);
 
 export { router as authRouter };

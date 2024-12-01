@@ -1,10 +1,9 @@
-import { UserResponse as UserType } from "./user.type";
+import { User as CustomUser } from "./user.type";
 
 declare global {
   namespace Express {
-    interface User extends Omit<UserType, "password"> {}
-    interface Request {
-      user?: User;
-    }
+    interface User extends Omit<CustomUser, keyof Document> {}
   }
 }
+
+export {};

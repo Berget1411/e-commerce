@@ -16,7 +16,10 @@ import cloudinary from "../lib/cloudinary";
 import { getLikedProducts, toggleLike } from "../services/user.service";
 import { User } from "../types/user.type";
 
-export const getAllProductsController = async (req: Request, res: Response) => {
+export const getAllProductsController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const products = await getAllProducts();
     res.status(200).json(products);
@@ -28,16 +31,17 @@ export const getAllProductsController = async (req: Request, res: Response) => {
 export const getFeaturedProductsController = async (
   req: Request,
   res: Response
-) => {
+): Promise<void> => {
   try {
     let featuredProducts = await redis.get("featured_products");
     if (featuredProducts) {
-      return res.status(200).json(JSON.parse(featuredProducts as string));
+      res.status(200).json(JSON.parse(featuredProducts as string));
+      return;
     }
-    // if not in redis, get from db
     featuredProducts = await getFeaturedProducts();
     if (!featuredProducts) {
-      return res.status(404).json({ message: "No featured products found" });
+      res.status(404).json({ message: "No featured products found" });
+      return;
     }
     await redis.set("featured_products", JSON.stringify(featuredProducts));
     res.status(200).json(featuredProducts);
@@ -49,11 +53,12 @@ export const getFeaturedProductsController = async (
 export const getRecommendedProductsController = async (
   req: Request,
   res: Response
-) => {
+): Promise<void> => {
   try {
     const recommendedProducts = await getRecommendedProducts();
     if (!recommendedProducts) {
-      return res.status(404).json({ message: "No recommended products found" });
+      res.status(404).json({ message: "No recommended products found" });
+      return;
     }
     res.status(200).json(recommendedProducts);
   } catch (error) {
@@ -61,12 +66,16 @@ export const getRecommendedProductsController = async (
   }
 };
 
-export const getProductByIdController = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const getProductByIdController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
+    const { id } = req.params;
     const product = await getProductById(id);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      res.status(404).json({ message: "Product not found" });
+      return;
     }
     res.status(200).json(product);
   } catch (error) {
@@ -213,7 +222,7 @@ export const toggleLikeController = async (req: Request, res: Response) => {
   const user = req.user as User;
 
   try {
-    const result = await toggleLike(user._id, productId);
+    const result = await toggleLike(user._id.toString(), productId);
     res.status(200).json(result);
   } catch (error) {
     console.log(error);
@@ -231,7 +240,7 @@ export const getLikedProductsController = async (
       return res.status(401).json({ message: "User not authenticated" });
     }
 
-    const likedProducts = await getLikedProducts(user._id);
+    const likedProducts = await getLikedProducts(user._id.toString());
     console.log(likedProducts);
 
     if (!likedProducts || likedProducts.length === 0) {

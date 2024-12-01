@@ -11,13 +11,14 @@ dotenv.config();
 export const createCheckoutSessionController = async (
   req: Request,
   res: Response
-) => {
+): Promise<void> => {
   try {
     const user = req.user as User;
     const { products } = req.body;
 
     if (!Array.isArray(products) || products.length === 0) {
-      return res.status(400).json({ error: "Invalid or empty products array" });
+      res.status(400).json({ error: "Invalid or empty products array" });
+      return;
     }
 
     let totalAmount = 0;
@@ -71,12 +72,10 @@ export const createCheckoutSessionController = async (
       },
     });
 
-    return res
-      .status(200)
-      .json({ id: session.id, totalAmount: totalAmount / 100 });
+    res.status(200).json({ id: session.id, totalAmount: totalAmount / 100 });
   } catch (error) {
     console.error("Error processing checkout:", error);
-    return res.status(500).json({
+    res.status(500).json({
       message: "Error processing checkout",
       error: error instanceof Error ? error.message : "Unknown error",
     });
@@ -86,7 +85,7 @@ export const createCheckoutSessionController = async (
 export const checkoutSuccessController = async (
   req: Request,
   res: Response
-) => {
+): Promise<void> => {
   try {
     const { sessionId } = req.body;
     const user = req.user as User;
@@ -97,11 +96,12 @@ export const checkoutSuccessController = async (
     // First check if order already exists
     const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
     if (existingOrder) {
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "Order already processed",
         order: existingOrder,
       });
+      return;
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -135,22 +135,20 @@ export const checkoutSuccessController = async (
       }
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Payment successful and order created",
       order: newOrder,
     });
   } catch (error) {
-    console.error("Error processing successful checkout:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Error processing successful checkout",
-      error: error instanceof Error ? error.message : "Unknown error",
-    });
+    res.status(500).json({ message: "Error processing successful checkout" });
   }
 };
 
-export const getOrdersController = async (req: Request, res: Response) => {
+export const getOrdersController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const user = req.user as User;
     const currentUser = await UserModel.findById(user._id);
@@ -158,12 +156,8 @@ export const getOrdersController = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
     const orders = await Order.find({ user: currentUser._id });
-    return res.status(200).json({ orders });
+    res.status(200).json({ orders });
   } catch (error) {
-    console.error("Error getting orders:", error);
-    return res.status(500).json({
-      message: "Error getting orders",
-      error: error instanceof Error ? error.message : "Unknown error",
-    });
+    res.status(500).json({ message: "Error getting orders" });
   }
 };

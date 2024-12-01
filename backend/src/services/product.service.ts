@@ -1,4 +1,5 @@
 import { Product } from "../models/product.model";
+import { CreateProductInput } from "../types/product.type";
 
 export const getAllProducts = async () => {
   return await Product.find();
@@ -22,16 +23,19 @@ export const toggleFeatured = async (id: string, featured: boolean) => {
   return await Product.findByIdAndUpdate(id, { featured });
 };
 
-export const createProduct = async (product: Product) => {
-  return await Product.create(product);
+export const createProduct = async (productData: CreateProductInput) => {
+  return await Product.create(productData);
 };
 
 export const getProductById = async (id: string) => {
   return await Product.findById(id);
 };
 
-export const updateProduct = async (id: string, product: Product) => {
-  return await Product.findByIdAndUpdate(id, product);
+export const updateProduct = async (
+  id: string,
+  productData: CreateProductInput
+) => {
+  return await Product.findByIdAndUpdate(id, productData);
 };
 
 export const deleteProduct = async (id: string) => {

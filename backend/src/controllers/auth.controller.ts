@@ -6,7 +6,6 @@ import {
   verifyUserEmail,
 } from "../services/user.service";
 import { User } from "../types/user.type";
-import crypto from "crypto";
 import { sendVerificationEmail } from "../services/email.service";
 import { User as UserModel } from "../models/user.model";
 import {
@@ -35,7 +34,9 @@ export const signup = async (
 
   const newUser = await createUser({ name, email, password });
   try {
-    const verificationToken = await createVerificationToken(newUser._id);
+    const verificationToken = await createVerificationToken(
+      newUser._id.toString()
+    );
     await sendVerificationEmail(newUser.email, verificationToken.token);
   } catch (error) {
     console.error("Error sending verification email:", error);
@@ -45,20 +46,18 @@ export const signup = async (
   res.status(201).json({
     message: "User created successfully",
     user: {
-      _id: newUser._id.toString(),
+      _id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       emailVerified: newUser.emailVerified,
       role: newUser.role,
       cartItems: [],
+      likedProducts: [],
     },
   });
 };
 
-export const verifyEmail = async (
-  req: Request<{ token: string }>,
-  res: Response<{ message: string }>
-) => {
+export const verifyEmail = async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
     const verificationToken = await findVerificationTokenByToken(token);
@@ -74,14 +73,14 @@ export const verifyEmail = async (
 
     res.status(200).json({ message: "Email verified successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
 export const resendVerificationEmail = async (
-  req: Request<{ email: string }>,
+  req: Request<{}, {}, { email: string }>,
   res: Response<{ message: string }>
-) => {
+): Promise<Response | void> => {
   try {
     const { email } = req.body;
     const user = await findUserByEmail(email);
@@ -99,7 +98,7 @@ export const resendVerificationEmail = async (
     await sendVerificationEmail(user.email, verificationToken.token);
     res.status(200).json({ message: "Verification email resent" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -111,12 +110,13 @@ export const login = async (
   res.status(200).json({
     message: "Login successful",
     user: {
-      _id: user._id.toString(),
+      _id: user._id,
       name: user.name,
       email: user.email,
       emailVerified: user.emailVerified,
       role: user.role,
       cartItems: user.cartItems,
+      likedProducts: user.likedProducts,
     },
   });
 };
@@ -129,12 +129,13 @@ export const status = async (
   res.status(200).json({
     message: "User is authenticated",
     user: {
-      _id: user._id.toString(),
+      _id: user._id,
       name: user.name,
       email: user.email,
       emailVerified: user.emailVerified,
       role: user.role,
       cartItems: user.cartItems,
+      likedProducts: user.likedProducts,
     },
   });
 };
@@ -157,7 +158,7 @@ export const logout = async (
 export const forgotPassword = async (
   req: Request<any, any, { email: string }>,
   res: Response<{ message: string }>
-) => {
+): Promise<Response | void> => {
   try {
     const { email } = req.body;
     const user = await findUserByEmail(email);
@@ -168,21 +169,21 @@ export const forgotPassword = async (
       });
     }
 
-    const resetToken = await createResetToken(user._id);
+    const resetToken = await createResetToken(user._id.toString());
     await sendResetPasswordEmail(user.email, resetToken.token);
 
     res.status(200).json({
       message: "If an account exists, you will receive a reset email",
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
 export const resetPassword = async (
   req: Request<any, any, { token: string; password: string }>,
   res: Response<{ message: string }>
-) => {
+): Promise<Response | void> => {
   try {
     const { token, password } = req.body;
     const resetToken = await findResetTokenByToken(token);
@@ -204,6 +205,6 @@ export const resetPassword = async (
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };

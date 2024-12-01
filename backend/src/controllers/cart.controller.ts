@@ -3,13 +3,8 @@ import { User } from "../types/user.type";
 import { User as UserModel } from "../models/user.model";
 import { Types } from "mongoose";
 
-// Add type for authenticated request
-interface AuthenticatedRequest extends Request {
-  user?: User;
-}
-
 export const getCartProductsController = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -30,7 +25,7 @@ export const getCartProductsController = async (
 };
 
 export const addToCartController = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -70,7 +65,7 @@ export const addToCartController = async (
 };
 
 export const removeAllFromCartController = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -106,7 +101,7 @@ export const removeAllFromCartController = async (
 };
 
 export const updateQuantityController = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
