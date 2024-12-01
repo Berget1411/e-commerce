@@ -14,7 +14,6 @@ import {
   getLikedProductsController,
   toggleLikeController,
 } from "../controllers/product.controller";
-import { asyncHandler } from "../utils/async-handler";
 
 const router = Router();
 
@@ -25,9 +24,12 @@ router.get(
   isAuthenticated,
   getLikedProductsController as unknown as RequestHandler
 );
-router.get("/category/:category", asyncHandler(getProductByCategoryController));
-router.get("/:id", asyncHandler(getProductByIdController));
-router.get("/", asyncHandler(getAllProductsController));
+router.get(
+  "/category/:category",
+  getProductByCategoryController as unknown as RequestHandler
+);
+router.get("/:id", getProductByIdController as RequestHandler);
+router.get("/", getAllProductsController as RequestHandler);
 
 router.post(
   "/",

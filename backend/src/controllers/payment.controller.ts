@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import Order from "../models/order.model";
-import { Product } from "../models/product.model";
+
 import stripe from "../lib/stripe";
 import { User } from "../types/user.type";
 import { Product as ProductModel } from "../models/product.model";
@@ -85,7 +85,7 @@ export const createCheckoutSessionController = async (
 export const checkoutSuccessController = async (
   req: Request,
   res: Response
-): Promise<void> => {
+) => {
   try {
     const { sessionId } = req.body;
     const user = req.user as User;
@@ -145,10 +145,7 @@ export const checkoutSuccessController = async (
   }
 };
 
-export const getOrdersController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getOrdersController = async (req: Request, res: Response) => {
   try {
     const user = req.user as User;
     const currentUser = await UserModel.findById(user._id);
