@@ -1,17 +1,27 @@
 "use client";
+
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
 export default function SearchInput({ drawer }: { drawer: boolean }) {
   const [search, setSearch] = useState("");
+  const router = useRouter();
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(search);
+    if (search.trim()) {
+      router.push(
+        `/home/products?search=${encodeURIComponent(search.trim())}&reset=true`,
+      );
+      setSearch("");
+    }
   };
+
   return (
     <form
-      action=""
       onSubmit={handleSearch}
       className={cn("w-full", !drawer && "max-w-xs max-sm:hidden")}
     >

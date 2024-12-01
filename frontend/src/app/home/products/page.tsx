@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useProductStore } from "@/stores/useProductStore";
 import { ProductCard } from "@/components/products/product-card";
 import ProductFilter from "@/components/products/product-filter";
@@ -8,23 +9,60 @@ import { Input } from "@/components/ui/input";
 import { Product } from "@/types/product";
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
   const { products, fetchProducts } = useProductStore();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
 
-  const [filters, setFilters] = useState({
+  const defaultFilters = {
     category: "",
     brand: "",
     targetAudience: "",
     minPrice: 0,
     maxPrice: 1000,
     onSale: false,
-    sortBy: "newest" | "highest-price" | "lowest-price",
-  });
+    sortBy: "newest" as const,
+  };
+
+  const [filters, setFilters] = useState(defaultFilters);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    const search = searchParams.get("search");
+    const category = searchParams.get("category");
+    const targetAudience = searchParams.get("targetAudience");
+    const sortBy = searchParams.get("sortBy");
+    const onSale = searchParams.get("onSale");
+    const brand = searchParams.get("brand");
+    const reset = searchParams.get("reset");
+
+    if (reset === "true") {
+      setFilters({
+        ...defaultFilters,
+        ...(category && { category }),
+        ...(search && { search }),
+      });
+      return;
+    }
+
+    setFilters((prev) => ({
+      ...prev,
+      ...(category && { category }),
+      ...(targetAudience && { targetAudience }),
+      ...(sortBy && { sortBy: sortBy as typeof prev.sortBy }),
+      ...(onSale && { onSale: onSale === "true" }),
+      ...(brand && { brand }),
+    }));
+
+    if (search) {
+      setSearchQuery(search);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (products.length) {
@@ -112,7 +150,7 @@ export default function ProductsPage() {
         <main className="flex-1">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id} product={product} />
             ))}
           </div>
         </main>

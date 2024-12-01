@@ -15,35 +15,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/stores/useUserStore";
 import NavSearch from "./nav-search";
+import BrandsMenu from "./brands-menu";
 
 const tabs = [
   {
     label: "Women",
-    href: "/",
+    href: "/home/products?targetAudience=women",
   },
   {
     label: "Men",
-    href: "/",
+    href: "/home/products?targetAudience=men",
   },
   {
     label: "Kids",
-    href: "/",
+    href: "/home/products?targetAudience=kids",
   },
   {
     label: "Sports",
-    href: "/",
-  },
-  {
-    label: "Brands",
-    href: "/",
+    href: "/home/products?category=Sport",
   },
   {
     label: "New",
-    href: "/",
+    href: "/home/products?sortBy=newest",
   },
   {
     label: "Sale",
-    href: "/",
+    href: "/home/products?onSale=true",
   },
 ];
 
@@ -125,6 +122,7 @@ export default function Navbar() {
             {tab.label}
           </Link>
         ))}
+        <BrandsMenu />
       </div>
     </header>
   );
