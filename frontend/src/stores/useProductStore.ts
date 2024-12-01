@@ -29,8 +29,13 @@ export const useProductStore = create<ProductStore>((set) => ({
   setProducts: (products: Product[]) => set({ products }),
   setRecommendedProducts: () => {
     const allProducts = useProductStore.getState().products;
-    const shuffledProducts = [...allProducts].sort(() => 0.5 - Math.random());
-    const recommendedProducts = shuffledProducts.slice(0, 3);
+    const nikeProducts = allProducts.filter(
+      (product) => product.brand === "Nike",
+    );
+    const shuffledNikeProducts = [...nikeProducts].sort(
+      () => 0.5 - Math.random(),
+    );
+    const recommendedProducts = shuffledNikeProducts.slice(0, 3);
     set({ recommendedProducts });
   },
   fetchProducts: async () => {

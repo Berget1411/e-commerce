@@ -23,18 +23,20 @@ export default function Hero() {
     <section id="home" className="max-container flex max-md:flex-col">
       <AuroraBackground className="absolute inset-0" />
       <div className="relative flex w-full flex-col items-center justify-center text-center md:w-3/5 md:items-start md:pt-20 md:text-left">
-        <p className="text-lg text-primary md:text-xl">Our Summer Collection</p>
+        <p className="text-lg text-primary md:text-xl">Nike Summer Sale</p>
         <h1 className="mt-6 text-4xl font-bold md:mt-8 md:text-5xl lg:text-6xl">
           <span className="relative z-10 pr-4 md:pr-10 xl:whitespace-nowrap">
-            The New Arrival
+            Nike Collection
           </span>
           <br />
-          <span className="mt-2 inline-block text-primary md:mt-3">Swift</span>
+          <span className="mt-2 inline-block text-primary md:mt-3">
+            Premium
+          </span>
           Shoes
         </h1>
         <p className="text-slate-gray mb-8 mt-4 text-base leading-7 sm:max-w-sm md:mb-10 md:mt-6 md:text-lg">
-          Discover Stylish shoe arrivals, quality comfort, and innovation for
-          your active life.
+          Experience the ultimate in Nike footwear with exclusive deals on our
+          premium collection. Limited time offers available now.
         </p>
         <Link href="/home/products">
           <Button className="w-full sm:w-auto">Shop now</Button>
