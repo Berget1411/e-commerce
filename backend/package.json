@@ -22,9 +22,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.1.5",
     "express-session": "^1.18.1",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.0",
+    "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
@@ -32,27 +36,24 @@
     "resend": "^4.0.1",
     "stripe": "^17.3.1",
     "uuid": "^11.0.2",
-    "zod": "^3.23.8",
-    "helmet": "^7.1.0",
-    "express-rate-limit": "^7.1.5",
-    "express-mongo-sanitize": "^2.2.0",
-    "morgan": "^1.10.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/mongoose": "^5.11.97",
-    "@types/node": "^22.9.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.10.1",
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/stripe-v3": "^3.1.33",
     "@types/uuid": "^10.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
-    "@types/morgan": "^1.9.9"
+    "typescript": "^5.6.3"
   }
 }
