@@ -11,7 +11,7 @@ export type Product = {
   category: string;
   brand: string;
   target_audience: string;
-  imageUrl: string;
+  image: string;
   rating: number;
   stock: number;
   reviews: Review[];

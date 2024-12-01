@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import ProductCard from "./product-card";
+import HeroCard from "./hero-card";
 import { AuroraBackground } from "../ui/aurora-background";
 
 const STATS = [
@@ -25,7 +25,9 @@ const STATS = [
 
 export default function Hero() {
   const { recommendedProducts } = useProductStore();
-  const [productOnDisplay, setProductOnDisplay] = useState<Product | null>();
+  const [productOnDisplay, setProductOnDisplay] = useState<Product | null>(
+    null,
+  );
 
   useEffect(() => {
     setProductOnDisplay(recommendedProducts[0]);
@@ -68,7 +70,7 @@ export default function Hero() {
       <div className="relative flex flex-1 items-center justify-center py-16 md:py-24">
         <div className="absolute inset-0 -z-10 rounded-full bg-secondary/80 blur-3xl" />
         <div className="absolute inset-0 -z-10 rounded-full bg-primary/20 blur-2xl" />
-        <Link href={`/products/${productOnDisplay?._id}`}>
+        <Link href={`/home/products/${productOnDisplay?._id}`}>
           <Image
             src={productOnDisplay?.image || ""}
             alt="shoe collection"
@@ -79,7 +81,8 @@ export default function Hero() {
         </Link>
         <div className="absolute -bottom-12 flex gap-2 overflow-x-auto px-4 sm:-bottom-20 md:-bottom-0 md:gap-4 lg:-bottom-16 lg:gap-6">
           {recommendedProducts.map((product) => (
-            <ProductCard
+            <HeroCard
+              key={product._id}
               product={product}
               setProductOnDisplay={setProductOnDisplay}
               productOnDisplay={productOnDisplay}
