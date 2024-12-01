@@ -8,13 +8,7 @@ import { Input } from "../ui/input";
 import Link from "next/link";
 import { usePaymentStore } from "@/stores/usePaymentStore";
 import { useCartStore } from "@/stores/useCartStore";
-export default function CheckoutForm({
-  totalAmount,
-  totalItems,
-}: {
-  totalAmount: number;
-  totalItems: number;
-}) {
+export default function CheckoutForm({ totalAmount }: { totalAmount: number }) {
   const { handlePayment, isLoading } = usePaymentStore();
   const { cartItems } = useCartStore();
   const [delivery, setDelivery] = useState<string>("free");

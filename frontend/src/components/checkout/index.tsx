@@ -33,14 +33,10 @@ export default function CheckoutPage() {
       .toFixed(2),
   );
 
-  const totalItems = cartProducts.reduce((acc, product) => {
-    const cartItem = cartItems.find((item) => item.productId === product._id);
-    return acc + cartItem!.quantity;
-  }, 0);
   return (
     <div className="flex w-[1000px] gap-4 max-md:w-full max-md:flex-col max-md:px-4">
       <CheckoutProducts cartProducts={cartProducts} />
-      <CheckoutForm totalAmount={totalAmount} totalItems={totalItems} />
+      <CheckoutForm totalAmount={totalAmount} />
     </div>
   );
 }

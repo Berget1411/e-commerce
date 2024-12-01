@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import CartProduct from "@/components/navbar/cart-product";
-
+import { Product as ProductType } from "@/types/product";
 import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
 
 type CartProduct = {
@@ -31,7 +31,10 @@ export default function CheckoutProducts({
           <div className="space-y-4">
             {cartProducts.map((product) => (
               <div key={product._id}>
-                <CartProduct key={product._id} product={product} />
+                <CartProduct
+                  key={product._id}
+                  product={product as ProductType}
+                />
                 <Separator className="my-4" />
               </div>
             ))}

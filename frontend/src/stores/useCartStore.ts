@@ -8,7 +8,7 @@ type CartStore = {
   addToCart: (productId: string) => Promise<void>;
   removeFromCart: (productId: string) => Promise<void>;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
-  removeAllFromCart: (productId: string) => Promise<void>;
+  removeAllFromCart: () => void;
 };
 
 export const useCartStore = create<CartStore>((set) => ({
@@ -97,25 +97,7 @@ export const useCartStore = create<CartStore>((set) => ({
       console.error("Error updating quantity:", error);
     }
   },
-  removeAllFromCart: async (productId: string | undefined) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/cart`,
-        {
-          method: "DELETE",
-          credentials: "include",
-          body: JSON.stringify({ productId }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-      const data = await response.json();
-      if (data.cartItems) {
-        set({ cartItems: data.cartItems });
-      }
-    } catch (error) {
-      console.error("Error removing all from cart:", error);
-    }
+  removeAllFromCart: () => {
+    set({ cartItems: [] });
   },
 }));

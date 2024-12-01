@@ -17,7 +17,7 @@ export default function CartProduct({ product }: { product: Product }) {
       2,
     ),
   );
-  const isLiked = likedProducts.some((p) => p._id === product._id);
+  const isLiked = likedProducts?.some((p) => p._id === product._id) || false;
 
   return (
     <div key={product._id} className="flex items-center gap-4">
