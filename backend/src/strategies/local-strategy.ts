@@ -20,19 +20,17 @@ passport.deserializeUser(async (id: string, done) => {
       return done(new Error("User Not Found"), null);
     }
 
-    // Convert to plain object and remove password
-    const userObject = user.toObject();
+    const userObject = user.toObject({ getters: true });
     const { password: _, ...safeUser } = userObject;
 
-    done(null, {
-      _id: safeUser._id,
-      name: safeUser.name,
-      email: safeUser.email,
-      emailVerified: safeUser.emailVerified,
-      role: safeUser.role,
-      cartItems: safeUser.cartItems,
+    const userWithDates = {
+      ...safeUser,
       likedProducts: safeUser.likedProducts || [],
-    } as Express.User);
+      createdAt: new Date(safeUser.createdAt),
+      updatedAt: new Date(safeUser.updatedAt),
+    } satisfies Express.User;
+
+    done(null, userWithDates);
   } catch (error) {
     done(error as Error, null);
   }
@@ -54,10 +52,17 @@ export default passport.use(
         return done(new Error("Invalid Credentials"), false);
       }
 
-      const userObject = user.toObject();
+      const userObject = user.toObject({ getters: true });
       const { password: _, ...safeUser } = userObject;
 
-      return done(null, safeUser as Express.User);
+      const userWithDates = {
+        ...safeUser,
+        likedProducts: safeUser.likedProducts || [],
+        createdAt: new Date(safeUser.createdAt),
+        updatedAt: new Date(safeUser.updatedAt),
+      } satisfies Express.User;
+
+      return done(null, userWithDates);
     } catch (error) {
       return done(error as Error, false);
     }

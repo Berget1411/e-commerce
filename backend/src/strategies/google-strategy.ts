@@ -11,11 +11,9 @@ passport.use(
     },
     async function verify(accessToken, refreshToken, profile, cb) {
       try {
-        // Check if user exists
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          // Create new user if doesn't exist
           user = await User.create({
             googleId: profile.id,
             name: profile.displayName,
@@ -27,13 +25,26 @@ passport.use(
           user = await User.findOneAndUpdate(
             { email: profile.emails?.[0].value },
             {
-              isEmailVerified: true,
+              emailVerified: true,
             },
             { upsert: true, new: true }
           );
         }
 
-        return cb(null, user);
+        if (!user) {
+          return cb(new Error("Failed to create/update user"), undefined);
+        }
+
+        const userObject = user.toObject({ getters: true });
+
+        const userWithDates = {
+          ...userObject,
+          likedProducts: userObject.likedProducts || [],
+          createdAt: new Date(userObject.createdAt),
+          updatedAt: new Date(userObject.updatedAt),
+        } satisfies Express.User;
+
+        return cb(null, userWithDates);
       } catch (error) {
         return cb(error as Error);
       }

@@ -1,8 +1,22 @@
-import { User as CustomUser } from "./user.type";
+import { Types } from "mongoose";
 
 declare global {
   namespace Express {
-    interface User extends Omit<CustomUser, keyof Document> {}
+    interface User {
+      _id: Types.ObjectId;
+      name: string;
+      email: string;
+      emailVerified: boolean;
+      role: "admin" | "user";
+      provider?: "local" | "google";
+      cartItems: Array<{
+        quantity: number;
+        productId: Types.ObjectId;
+      }>;
+      likedProducts: Types.ObjectId[];
+      createdAt: Date;
+      updatedAt: Date;
+    }
   }
 }
 
