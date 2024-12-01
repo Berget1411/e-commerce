@@ -7,21 +7,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import HeroCard from "./hero-card";
 import { AuroraBackground } from "../ui/aurora-background";
-
-const STATS = [
-  {
-    label: "Brands",
-    value: "1k+",
-  },
-  {
-    label: "Shops",
-    value: "2.5k",
-  },
-  {
-    label: "Customers",
-    value: "250k+",
-  },
-];
+import { HERO_STATS } from "@/lib/constants";
 
 export default function Hero() {
   const { recommendedProducts } = useProductStore();
@@ -54,7 +40,7 @@ export default function Hero() {
           <Button className="w-full sm:w-auto">Shop now</Button>
         </Link>
         <div className="mt-12 flex flex-wrap justify-center gap-8 md:mt-16 md:justify-start md:gap-16">
-          {STATS.map((stat) => (
+          {HERO_STATS.map((stat) => (
             <div key={stat.label} className="text-center md:text-left">
               <p className="text-2xl font-bold md:text-2xl lg:text-4xl">
                 {stat.value}

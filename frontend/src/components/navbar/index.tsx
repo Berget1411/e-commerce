@@ -1,53 +1,16 @@
-"use client";
-import { useState } from "react";
-import { LuSearch, LuUser, LuShoppingCart, LuHeart } from "react-icons/lu";
+import { LuHeart } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import Drawer from "@/components/ui/drawer";
+
 import SearchInput from "./search-input";
 import NavCart from "./nav-cart";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useUserStore } from "@/stores/useUserStore";
+import UserButton from "./user-button";
 import NavSearch from "./nav-search";
 import BrandsMenu from "./brands-menu";
-
-const tabs = [
-  {
-    label: "Women",
-    href: "/home/products?targetAudience=women",
-  },
-  {
-    label: "Men",
-    href: "/home/products?targetAudience=men",
-  },
-  {
-    label: "Kids",
-    href: "/home/products?targetAudience=kids",
-  },
-  {
-    label: "Sports",
-    href: "/home/products?category=Sport",
-  },
-  {
-    label: "New",
-    href: "/home/products?sortBy=newest",
-  },
-  {
-    label: "Sale",
-    href: "/home/products?onSale=true",
-  },
-];
+import { NAV_TABS } from "@/lib/constants";
 
 export default function Navbar() {
-  const { user, logout } = useUserStore();
-  const [isDrawerOpen, setIsDrawerOpen] = useState<string | false>(false);
-  console.log(user);
   return (
     <header className="max-container sticky top-0 z-30 bg-transparent">
       <div className="flex items-center justify-between py-4">
@@ -66,51 +29,11 @@ export default function Navbar() {
               <LuHeart />
             </Link>
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <LuUser />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {user ? (
-                <>
-                  <DropdownMenuItem>
-                    <Link href="/account" className="w-full">
-                      Account
-                    </Link>
-                  </DropdownMenuItem>
-                  {user.role === "admin" && (
-                    <DropdownMenuItem>
-                      <Link href="/admin" className="w-full">
-                        Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem onClick={() => logout()}>
-                    Logout
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <>
-                  <DropdownMenuItem>
-                    <Link href="/auth/login" className="w-full">
-                      Login
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/auth/signup" className="w-full">
-                      Sign Up
-                    </Link>
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserButton />
         </div>
       </div>
       <div className="flex items-center gap-4 pb-8">
-        {tabs.map((tab) => (
+        {NAV_TABS.map((tab) => (
           <Link
             href={tab.href}
             key={tab.label}

@@ -1,10 +1,4 @@
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SearchInput from "./search-input";
 import { Button } from "@/components/ui/button";
 import { LuSearch } from "react-icons/lu";
